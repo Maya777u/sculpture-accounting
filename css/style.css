@@ -375,3 +375,100 @@ select.input { appearance: none; -webkit-appearance: none; }
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* ============ KPI Cards ============ */
+.kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 14px 0 12px; }
+.kpi {
+  background: linear-gradient(160deg, var(--panel), var(--bg2));
+  border: 1px solid var(--line); border-radius: 14px; padding: 13px;
+}
+.kpi-ico { font-size: 18px; display: inline-block; margin-bottom: 4px; }
+.kpi-ico.gold-ic { filter: drop-shadow(0 0 8px rgba(240,180,41,.5)); }
+.kpi-ico.red-ic { filter: drop-shadow(0 0 8px rgba(248,113,113,.4)); }
+.kpi-ico.green-ic { filter: drop-shadow(0 0 8px rgba(52,211,153,.4)); }
+.kpi-ico.blue-ic { filter: drop-shadow(0 0 8px rgba(96,165,250,.4)); }
+.kpi-num { font-size: 19px; font-weight: 900; color: var(--gold2); font-variant-numeric: tabular-nums; line-height: 1.3; }
+.kpi-lbl { font-size: 10px; color: var(--dim2); margin-top: 2px; }
+
+/* ============ ردیف‌های کلیک‌پذیر ============ */
+.trow.clickable { cursor: pointer; transition: background .15s; border-radius: 8px; padding: 9px 6px; }
+.trow.clickable:active { background: rgba(59,130,246,.1); }
+.edit-ic { font-size: 12px; opacity: .6; margin-inline-start: 6px; }
+.rank-badge {
+  width: 20px; height: 20px; border-radius: 6px; background: var(--bg2); border: 1px solid var(--line);
+  display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: var(--gold2); margin-inline-end: 7px;
+}
+
+/* ============ تقویم ============ */
+.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cal-arrow { background: var(--bg2); border: 1px solid var(--line); color: var(--text); width: 34px; height: 34px; border-radius: 10px; font-size: 13px; cursor: pointer; }
+.cal-month { font-size: 14px; font-weight: 800; color: var(--gold2); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-hd { text-align: center; font-size: 10px; color: var(--dim2); padding: 4px 0; font-weight: 700; }
+.cal-day {
+  background: var(--bg2); border: 1px solid var(--line); color: var(--text);
+  padding: 9px 0; border-radius: 9px; font-family: var(--font); font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all .12s;
+}
+.cal-day:active { transform: scale(.92); }
+.cal-day.today { border-color: var(--gold); color: var(--gold2); box-shadow: 0 0 10px rgba(240,180,41,.3); }
+.cal-foot { text-align: center; margin-top: 12px; }
+
+/* ============ فیلد تاریخ + دکمه تقویم ============ */
+.date-row { display: flex; gap: 8px; margin-top: 5px; }
+.date-row .input { flex: 1; margin-top: 0; }
+.date-btn {
+  background: linear-gradient(135deg, var(--blue), #1d4ed8); border: none; border-radius: 11px;
+  color: #fff; font-size: 16px; width: 46px; cursor: pointer; flex: none;
+}
+
+/* ============ نمودار تعاملی ============ */
+.bar-group { position: relative; }
+.seg-toggle { display: flex; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; }
+.seg-btn { background: none; border: none; color: var(--dim); font-family: var(--font); font-size: 10.5px; font-weight: 800; padding: 5px 12px; border-radius: 7px; cursor: pointer; transition: all .2s; }
+.seg-btn.on { background: linear-gradient(135deg, var(--blue), #1d4ed8); color: #fff; }
+.bars-col.clickable { cursor: pointer; }
+.bars-col.clickable:active { transform: scale(.94); }
+.chart-legend { display: flex; align-items: center; gap: 12px; justify-content: center; margin-top: 8px; font-size: 10px; color: var(--dim); flex-wrap: wrap; }
+.lg { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; }
+.lg::before { content: ''; width: 9px; height: 9px; border-radius: 3px; }
+.lg-in::before { background: linear-gradient(180deg, var(--blue2), var(--blue)); }
+.lg-cost::before { background: linear-gradient(180deg, #fb7185, var(--red)); }
+.lg-note { opacity: .7; }
+
+/* جزئیات ماه */
+.month-detail {
+  margin-top: 10px; padding: 12px; border-radius: 12px;
+  background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.3);
+  animation: popIn .3s ease both;
+}
+.md-head { font-size: 12px; font-weight: 800; color: var(--blue2); margin-bottom: 8px; }
+.md-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.md-cell { background: var(--bg2); border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; }
+.md-val { font-size: 14px; font-weight: 900; display: block; }
+.md-val.gold { color: var(--gold2); }
+.md-val.red { color: var(--red); }
+.md-val.green { color: var(--green); }
+.md-val.blue { color: var(--blue2); }
+.md-lbl { font-size: 9px; color: var(--dim2); }
+.md-days { margin-top: 8px; font-size: 11px; color: var(--dim); }
+
+/* ============ نمودار SVG روزهای هفته ============ */
+.chart-svg { width: 100%; height: auto; }
+.chart-svg svg { width: 100%; height: auto; }
+.ch-txt { font-size: 10px; fill: var(--dim); font-weight: 700; }
+.ch-lbl { font-size: 11px; fill: var(--dim2); font-weight: 700; }
+.chart-svg { display: block; }
+.insight-box {
+  margin-top: 10px; text-align: center; font-size: 12px; color: var(--dim);
+  background: rgba(240,180,41,.07); border: 1px dashed rgba(240,180,41,.35); border-radius: 10px; padding: 9px;
+  line-height: 1.9;
+}
+.insight-box b { color: var(--gold2); }
+.insight-sub { font-size: 9.5px; color: var(--dim2); }
+.insight-empty { text-align: center; color: var(--dim2); font-size: 11.5px; padding: 10px; }
+
+/* ============ مودال ویرایش ============ */
+.edit-actions { display: flex; gap: 10px; margin-top: 14px; }
+.edit-actions .btn { flex: 1; }
+.f-min { grid-column: span 1; }

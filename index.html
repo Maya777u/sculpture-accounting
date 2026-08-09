@@ -16,7 +16,6 @@
 </head>
 <body>
 
-  <!-- Splash -->
   <div id="splash" class="splash">
     <div class="splash-mark">🗿</div>
     <div class="splash-brand">مجسمه‌حساب</div>
@@ -24,18 +23,16 @@
     <div class="splash-bar"><span></span></div>
   </div>
 
-  <!-- Header -->
   <header class="hdr">
     <div class="brand">
       <span class="brand-mark">🗿</span>
       <div>
         <h1>مجسمه‌حساب</h1>
-        <span>کتاب‌خانه‌ی فروش و سود</span>
+        <span>سالن فروش و سود</span>
       </div>
     </div>
     <div class="hdr-box">
       <span class="hdr-date" id="hdrDate"></span>
-      <span class="online-dot" id="onlineDot"></span>
       <button class="icon-btn" id="gearBtn" title="تنظیمات">⚙️</button>
     </div>
   </header>
@@ -51,55 +48,34 @@
         <p id="greetSub"></p>
       </div>
 
-      <!-- Hero: سود ماه -->
-      <div class="hero" id="heroProfit">
-        <div class="hero-tag">سود خالص این ماه</div>
-        <div class="hero-val" id="heroProfitVal">۰</div>
-        <div class="hero-mini">
-          <div class="hm"><span class="hm-lbl">درآمد</span><b class="hm-val gold" id="heroIncome">۰</b></div>
-          <div class="hm"><span class="hm-lbl">هزینه</span><b class="hm-val red" id="heroCost">۰</b></div>
-          <div class="hm"><span class="hm-lbl">فروش</span><b class="hm-val blue" id="heroSalesCount">۰</b></div>
-        </div>
-        <div class="target-row">
-          <div class="target-bar"><div class="target-fill" id="targetFill"></div></div>
-          <span class="target-txt" id="targetTxt"></span>
-        </div>
+      <div class="kpis">
+        <div class="kpi"><span class="kpi-ico gold-ic">💰</span><div class="kpi-num" id="kpiIncome">۰</div><div class="kpi-lbl">درآمد این ماه</div></div>
+        <div class="kpi"><span class="kpi-ico red-ic">🧱</span><div class="kpi-num" id="kpiCost">۰</div><div class="kpi-lbl">هزینه ساخت این ماه</div></div>
+        <div class="kpi"><span class="kpi-ico green-ic">📦</span><div class="kpi-num" id="kpiStock">۰</div><div class="kpi-lbl">موجودی فعلی</div></div>
+        <div class="kpi"><span class="kpi-ico blue-ic">🛒</span><div class="kpi-num" id="kpiSold">۰</div><div class="kpi-lbl">فروش این ماه</div></div>
       </div>
 
-      <!-- دسترسی سریع -->
       <div class="quick-actions">
         <button class="qaction build" data-goto="build">
-          <span class="qa-ico">🏗️</span>
-          <span class="qa-title">ثبت ساخت</span>
-          <span class="qa-sub" id="qaBuilt">این ماه: ۰</span>
+          <span class="qa-ico">🏗️</span><span class="qa-title">ثبت ساخت</span>
         </button>
         <button class="qaction sell" data-goto="sell">
-          <span class="qa-ico">💰</span>
-          <span class="qa-title">ثبت فروش</span>
-          <span class="qa-sub" id="qaSold">این ماه: ۰</span>
+          <span class="qa-ico">💰</span><span class="qa-title">ثبت فروش</span>
         </button>
       </div>
 
-      <!-- هشدارها -->
-      <div class="alerts" id="alertsBox"></div>
-
-      <!-- پرفروش‌ترین‌ها mini -->
       <div class="cpanel">
         <div class="cpanel-head">
-          <h3>🏆 پرفروش‌ترین‌های این ماه</h3>
+          <h3>🔥 پرفروش‌ترین‌های این ماه</h3>
           <button class="lnk" data-goto="reports">گزارش کامل ←</button>
         </div>
         <div id="dashTopSellers"></div>
       </div>
     </section>
 
-    <!-- ============ BUILD (ساخت) ============ -->
+    <!-- ============ BUILD ============ -->
     <section id="view-build" class="view">
-      <div class="view-head">
-        <h2>🏗️ ثبت ساخت</h2>
-        <span class="v-date" id="buildDateToday"></span>
-      </div>
-
+      <div class="view-head"><h2>🏗️ ثبت ساخت</h2><span class="v-date" id="buildDateToday"></span></div>
       <div class="cpanel">
         <div class="form-grid">
           <label class="f-full">نام مجسمه <span class="req">*</span>
@@ -108,51 +84,50 @@
           <label>تعداد <span class="req">*</span>
             <input type="number" id="bQty" class="input" min="1" value="1" inputmode="numeric">
           </label>
-          <label>تاریخ ساخت (شمسی)
-            <input type="text" id="bDate" class="input" placeholder="1404/05/16 — خالی = امروز">
+          <label>هزینه ساخت هر عدد
+            <input type="number" id="bCost" class="input" min="0" placeholder="50000" inputmode="numeric">
           </label>
-          <label class="field-full">هزینه ساخت هر عدد (تومان)
-            <input type="number" id="bCost" class="input" min="0" placeholder="مثلا 50000" inputmode="numeric">
+          <label>قیمت فروش هر عدد
+            <input type="number" id="bPrice" class="input" min="0" placeholder="450000" inputmode="numeric">
           </label>
-          <label class="field-full">قیمت فروش هر عدد (تومان)
-            <input type="number" id="bPrice" class="input" min="0" placeholder="مثلا 450000" inputmode="numeric">
+          <label class="f-full">تاریخ ساخت (شمسی)
+            <div class="date-row">
+              <input type="text" id="bDate" class="input" placeholder="۱۴۰۴/۰۵/۱۸">
+              <button type="button" class="date-btn" id="bDateBtn">🗓</button>
+            </div>
           </label>
         </div>
         <button class="btn primary big" id="btnBuild">+ ثبت در موجودی</button>
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>🧾 تاریخچه ساخت</h3><span class="panel-sub">اخیر</span></div>
+        <div class="cpanel-head"><h3>🧾 تاریخچه ساخت</h3><span class="sub">برای ویرایش/حذف، روی هر ردیف بزن</span></div>
         <div id="buildHistory"></div>
       </div>
     </section>
 
-    <!-- ============ SELL (فروش) ============ -->
+    <!-- ============ SELL ============ -->
     <section id="view-sell" class="view">
-      <div class="view-head">
-        <h2>💰 ثبت فروش</h2>
-        <span class="sub-date" id="sellDateToday"></span>
-      </div>
+      <div class="view-head"><h2>💰 ثبت فروش</h2><span class="v-date" id="sellDateToday"></span></div>
 
-      <!-- موجودی -->
       <div class="cpanel" id="stockPanel">
-        <div class="cpanel-head"><h3>📦 موجودی فعلی</h3><span class="sub">روی هر کدوم بزن</span></div>
+        <div class="cpanel-head"><h3>📦 موجودی فعلی</h3><span class="sub">روی مجسمه بزن</span></div>
         <div id="stockChips" class="chips"></div>
       </div>
 
       <div class="cpanel" id="sellFormPanel">
         <div class="cpanel-head"><h3>🧾 اطلاعات فروش</h3></div>
         <div class="form-grid">
-          <label class="field-full">مجسمه
+          <label class="f-full">مجسمه
             <select id="sName" class="input"></select>
           </label>
-          <label>تعداد <span class="req">*</span>
+          <label class="f-min">تعداد
             <input type="number" id="sQty" class="input" min="1" value="1" inputmode="numeric">
           </label>
-          <label>قیمت هر عدد (تومان)
+          <label class="f-min">قیمت هر عدد
             <input type="number" id="sPrice" class="input" min="0" inputmode="numeric">
           </label>
-          <label class="field-full">نحوه فروش
+          <label class="f-full">نحوه فروش
             <select id="sChannel" class="input">
               <option>حضوری (غرفه)</option>
               <option>سفارش تلفنی</option>
@@ -161,44 +136,49 @@
               <option>سایر</option>
             </select>
           </label>
-          <label class="field-full">تاریخ فروش (شمسی)
-            <input type="text" id="sDate" class="input" placeholder="۱۴۰۴/۰۵/۱۶ — خالی = امروز">
+          <label class="f-full">تاریخ فروش (شمسی)
+            <div class="date-row">
+              <input type="text" id="sDate" class="input" placeholder="۱۴۰۴/۰۵/۱۸">
+              <button type="button" class="date-btn" id="sDateBtn">📅</button>
+            </div>
           </label>
         </div>
         <button class="btn primary big" id="btnSellAdd">✔ ثبت فروش</button>
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>🕘 فروش‌های اخیر</h3><span class="sub">آخرین رکوردها</span></div>
+        <div class="cpanel-head"><h3>🕘 فروش‌های اخیر</h3><span class="sub">برای ویرایش = روی ردیف بزن</span></div>
         <div id="recentSales"></div>
       </div>
     </section>
 
-    <!-- ============ REPORTS (گزارش) ============ -->
+    <!-- ============ REPORTS ============ -->
     <section id="view-reports" class="view">
       <div class="view-head">
         <h2>📊 گزارش حرفه‌ای</h2>
-        <span class="sub-date" id="reportPeriod"></span>
+        <span class="v-date">شمسی · دقیق</span>
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>درآمد در برابر هزینه</h3><span class="sub">۶ ماه اخیر</span></div>
-        <div class="chart" id="chMonthlyBars"></div>
+        <div class="cpanel-head">
+          <h3>📈 درآمد در برابر هزینه</h3>
+          <div class="seg-toggle">
+            <button class="seg-btn on" id="seg6m">۶ ماه</button>
+            <button class="seg-btn" id="segYear">کل سال</button>
+          </div>
+        </div>
+        <div class="bar-group" id="chMonthlyBars"></div>
+        <div class="month-detail" id="monthDetail"></div>
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>سود خالص ماهانه</h3><span class="sub">۶ ماه اخیر</span></div>
-        <div class="chart" id="chProfitLine"></div>
+        <div class="cpanel-head"><h3>📅 روزهای هفته</h3><span class="sub">کدوم روزها بیشتر فروختی؟</span></div>
+        <div id="chWeekday" class="chart-svg"></div>
+        <div class="insight-box" id="weekdayBest"></div>
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>روزهای هفته</h3><span class="sub">کدوم روزها بیشتر می‌فروشی؟</span></div>
-        <div class="chart" id="chWeekdayBars"></div>
-        <div class="bestday" id="weekdayBest"></div>
-      </div>
-
-      <div class="cpanel">
-        <div class="cpanel-head"><h3>کانال‌های فروش</h3><span class="sub">این ماه</span></div>
+        <div class="cpanel-head"><h3>🏪 کانال‌های فروش</h3><span class="sub">این ماه</span></div>
         <div class="donut-row">
           <div class="donut" id="chDonut"></div>
           <div class="donut-legend" id="chDonutLegend"></div>
@@ -206,14 +186,13 @@
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>پرفروش‌ترین‌ها (پارتو ۸۰/۲۰)</h3><span class="sub">این ماه</span></div>
+        <div class="cpanel-head"><h3>🏆 پرفروش‌ترین‌ها (پارتو ۸۰/۲۰)</h3><span class="sub">این ماه</span></div>
         <div id="chPareto"></div>
       </div>
     </section>
 
   </main>
 
-  <!-- Bottom Nav -->
   <nav class="nav">
     <button class="nbtn active" data-view="dashboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
@@ -233,39 +212,63 @@
     </button>
   </nav>
 
-  <!-- Modal: تنظیمات -->
+  <!-- مودال: ویرایش/حذف -->
+  <div class="modal" id="editModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="editModalTitle">ویرایش</h3>
+        <button class="icon-btn modal-close" id="editClose">✕</button>
+      </div>
+      <div class="form-grid" id="editFields"></div>
+      <div class="edit-actions">
+        <button class="btn danger" id="editDelete">🗑️ حذف</button>
+        <button class="btn primary" id="editSave">💾 ذخیره</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال: تقویم -->
+  <div class="modal" id="calModal" aria-hidden="true">
+    <div class="modal-box modal-sm">
+      <div class="modal-head">
+        <h3 id="calTitle">📅 انتخاب تاریخ</h3>
+        <button class="icon-btn modal-close" id="calClose">✕</button>
+      </div>
+      <div class="cal-nav">
+        <button class="cal-arrow" id="calPrev">◀</button>
+        <span class="cal-month" id="calMonthLabel">مرداد ۱۴۰۵</span>
+        <button class="cal-arrow" id="calNext">▶</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-foot">
+        <button class="btn ghost" id="calToday">امروز</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال: تنظیمات -->
   <div class="modal" id="settingsModal" aria-hidden="true">
     <div class="modal-box">
       <div class="modal-head">
         <h3>⚙️ تنظیمات</h3>
         <button class="icon-btn modal-close" data-close="settingsModal">✕</button>
       </div>
-      <label>هدف سود ماهانه (تومان)
-        <input type="number" id="setGoal" class="input" min="0" inputmode="numeric">
-      </label>
-      <label>حد هشدار موجودی (تعداد)
-        <input type="number" id="setLow" class="input" min="1" inputmode="numeric">
-      </label>
-      <button class="btn primary big" id="btnSaveSettings">ذخیره</button>
-      <div class="hr"></div>
-      <p class="set-desc">💾 پشتیبان‌گیری از همه‌ی داده‌ها به‌صورت فایل، یا بازیابی از فایل قبلی:</p>
+      <p class="set-desc">💾 پشتیبان‌گیری و بازیابی — فایل JSON کامل:</p>
       <div class="set-actions">
-        <button class="btn" id="btnBackup">⬇️ دانلود پشتیبان</button>
+        <button class="btn primary" id="btnBackup">⬇️ دانلود پشتیبان</button>
         <button class="btn" id="btnRestore">⬆️ بازیابی</button>
         <input type="file" id="restoreFile" accept=".json,application/json" style="display:none">
       </div>
-    </div>
-  </div>
-
-  <!-- Modal: تأیید حذف -->
-  <div class="modal" id="confirmModal" aria-hidden="true">
-    <div class="modal-box modal-sm">
-      <div class="modal-head"><h3>تأیید</h3></div>
-      <p id="confirmText" class="conf-txt"></p>
-      <div class="modal-actions">
-        <button class="btn" data-close-modal="confirmModal">انصراف</button>
-        <button class="btn danger" id="confirmYes">تأیید</button>
-      </div>
+      <div class="hr"></div>
+      <label>هدف سود ماهانه (تومان)
+        <input type="number" id="setGoal" class="input" min="0" inputmode="numeric">
+      </label>
+      <label>حد هشدار موجودی
+        <input type="number" id="setLow" class="input" min="1" inputmode="numeric">
+      </label>
+      <button class="btn big" id="btnSaveSettings">ذخیره تنظیمات</button>
+      <div class="hr"></div>
+      <p class="set-desc" style="color:var(--dim2)">نسخه برنامه: <b>2.0.0</b> — آخرین پشتیبان: <span id="lastBackupInfo">—</span></p>
     </div>
   </div>
 
