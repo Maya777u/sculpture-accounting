@@ -572,6 +572,11 @@
     });
   }
 
+  /* helper برای کارت‌های جمع‌بندی ماه */
+  function mdCell(ico, val, color) {
+    return '<div class="md-cell ' + color + '"><span class="md-ico">' + ico + '</span><div class="md-val">' + val + '</div></div>';
+  }
+
   /* مودال حساب کتاب کامل ماه */
   function openMonthDetail(m) {
     var jy = m.jy, jm = m.jm;
