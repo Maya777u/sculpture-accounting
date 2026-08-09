@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070b12">
+  <meta name="description" content="مجسمه‌حساب — دفترچه فروش و سود مجسمه‌ساز: ثبت ساخت، ثبت فروش، نمودارهای حرفه‌ای">
+  <title>مجسمه‌حساب | دفتر فروش و سود</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Splash -->
+  <div id="splash" class="splash">
+    <div class="splash-mark">🗿</div>
+    <div class="splash-brand">مجسمه‌حساب</div>
+    <div class="splash-sub">دفترچه فروش و سود</div>
+    <div class="splash-bar"><span></span></div>
+  </div>
+
+  <!-- Header -->
+  <header class="hdr">
+    <div class="brand">
+      <span class="brand-mark">🗿</span>
+      <div>
+        <h1>مجسمه‌حساب</h1>
+        <span>کتاب‌خانه‌ی فروش و سود</span>
+      </div>
+    </div>
+    <div class="hdr-box">
+      <span class="hdr-date" id="hdrDate"></span>
+      <span class="online-dot" id="onlineDot"></span>
+      <button class="icon-btn" id="gearBtn" title="تنظیمات">⚙️</button>
+    </div>
+  </header>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <main class="main">
+
+    <!-- ============ DASHBOARD ============ -->
+    <section id="view-dashboard" class="view active">
+      <div class="greet">
+        <h2 id="greetText">سلام استاد 👋</h2>
+        <p id="greetSub"></p>
+      </div>
+
+      <!-- Hero: سود ماه -->
+      <div class="hero" id="heroProfit">
+        <div class="hero-tag">سود خالص این ماه</div>
+        <div class="hero-val" id="heroProfitVal">۰</div>
+        <div class="hero-mini">
+          <div class="hm"><span class="hm-lbl">درآمد</span><b class="hm-val gold" id="heroIncome">۰</b></div>
+          <div class="hm"><span class="hm-lbl">هزینه</span><b class="hm-val red" id="heroCost">۰</b></div>
+          <div class="hm"><span class="hm-lbl">فروش</span><b class="hm-val blue" id="heroSalesCount">۰</b></div>
+        </div>
+        <div class="target-row">
+          <div class="target-bar"><div class="target-fill" id="targetFill"></div></div>
+          <span class="target-txt" id="targetTxt"></span>
+        </div>
+      </div>
+
+      <!-- دسترسی سریع -->
+      <div class="quick-actions">
+        <button class="qaction build" data-goto="build">
+          <span class="qa-ico">🏗️</span>
+          <span class="qa-title">ثبت ساخت</span>
+          <span class="qa-sub" id="qaBuilt">این ماه: ۰</span>
+        </button>
+        <button class="qaction sell" data-goto="sell">
+          <span class="qa-ico">💰</span>
+          <span class="qa-title">ثبت فروش</span>
+          <span class="qa-sub" id="qaSold">این ماه: ۰</span>
+        </button>
+      </div>
+
+      <!-- هشدارها -->
+      <div class="alerts" id="alertsBox"></div>
+
+      <!-- پرفروش‌ترین‌ها mini -->
+      <div class="cpanel">
+        <div class="cpanel-head">
+          <h3>🏆 پرفروش‌ترین‌های این ماه</h3>
+          <button class="lnk" data-goto="reports">گزارش کامل ←</button>
+        </div>
+        <div id="dashTopSellers"></div>
+      </div>
+    </section>
+
+    <!-- ============ BUILD (ساخت) ============ -->
+    <section id="view-build" class="view">
+      <div class="view-head">
+        <h2>🏗️ ثبت ساخت</h2>
+        <span class="v-date" id="buildDateToday"></span>
+      </div>
+
+      <div class="cpanel">
+        <div class="form-grid">
+          <label class="f-full">نام مجسمه <span class="req">*</span>
+            <input type="text" id="bName" class="input" placeholder="مثلا: هواپیمای استیم‌پانک">
+          </label>
+          <label>تعداد <span class="req">*</span>
+            <input type="number" id="bQty" class="input" min="1" value="1" inputmode="numeric">
+          </label>
+          <label>تاریخ ساخت (شمسی)
+            <input type="text" id="bDate" class="input" placeholder="1404/05/16 — خالی = امروز">
+          </label>
+          <label class="field-full">هزینه ساخت هر عدد (تومان)
+            <input type="number" id="bCost" class="input" min="0" placeholder="مثلا 50000" inputmode="numeric">
+          </label>
+          <label class="field-full">قیمت فروش هر عدد (تومان)
+            <input type="number" id="bPrice" class="input" min="0" placeholder="مثلا 450000" inputmode="numeric">
+          </label>
+        </div>
+        <button class="btn primary big" id="btnBuild">+ ثبت در موجودی</button>
+      </div>
+
+      <div class="cpanel">
+        <div class="cpanel-head"><h3>🧾 تاریخچه ساخت</h3><span class="panel-sub">اخیر</span></div>
+        <div id="buildHistory"></div>
+      </div>
+    </section>
+
+    <!-- ============ SELL (فروش) ============ -->
+    <section id="view-sell" class="view">
+      <div class="view-head">
+        <h2>💰 ثبت فروش</h2>
+        <span class="sub-date" id="sellDateToday"></span>
+      </div>
+
+      <!-- موجودی -->
+      <div class="cpanel" id="stockPanel">
+        <div class="cpanel-head"><h3>📦 موجودی فعلی</h3><span class="sub">روی هر کدوم بزن</span></div>
+        <div id="stockChips" class="chips"></div>
+      </div>
+
+      <div class="cpanel" id="sellFormPanel">
+        <div class="cpanel-head"><h3>🧾 اطلاعات فروش</h3></div>
+        <div class="form-grid">
+          <label class="field-full">مجسمه
+            <select id="sName" class="input"></select>
+          </label>
+          <label>تعداد <span class="req">*</span>
+            <input type="number" id="sQty" class="input" min="1" value="1" inputmode="numeric">
+          </label>
+          <label>قیمت هر عدد (تومان)
+            <input type="number" id="sPrice" class="input" min="0" inputmode="numeric">
+          </label>
+          <label class="field-full">نحوه فروش
+            <select id="sChannel" class="input">
+              <option>حضوری (غرفه)</option>
+              <option>سفارش تلفنی</option>
+              <option>اینستاگرام</option>
+              <option>باغ‌فردوس</option>
+              <option>سایر</option>
+            </select>
+          </label>
+          <label class="field-full">تاریخ فروش (شمسی)
+            <input type="text" id="sDate" class="input" placeholder="۱۴۰۴/۰۵/۱۶ — خالی = امروز">
+          </label>
+        </div>
+        <button class="btn primary big" id="btnSellAdd">✔ ثبت فروش</button>
+      </div>
+
+      <div class="cpanel">
+        <div class="cpanel-head"><h3>🕘 فروش‌های اخیر</h3><span class="sub">آخرین رکوردها</span></div>
+        <div id="recentSales"></div>
+      </div>
+    </section>
+
+    <!-- ============ REPORTS (گزارش) ============ -->
+    <section id="view-reports" class="view">
+      <div class="view-head">
+        <h2>📊 گزارش حرفه‌ای</h2>
+        <span class="sub-date" id="reportPeriod"></span>
+      </div>
+
+      <div class="cpanel">
+        <div class="cpanel-head"><h3>درآمد در برابر هزینه</h3><span class="sub">۶ ماه اخیر</span></div>
+        <div class="chart" id="chMonthlyBars"></div>
+      </div>
+
+      <div class="cpanel">
+        <div class="cpanel-head"><h3>سود خالص ماهانه</h3><span class="sub">۶ ماه اخیر</span></div>
+        <div class="chart" id="chProfitLine"></div>
+      </div>
+
+      <div class="cpanel">
+        <div class="cpanel-head"><h3>روزهای هفته</h3><span class="sub">کدوم روزها بیشتر می‌فروشی؟</span></div>
+        <div class="chart" id="chWeekdayBars"></div>
+        <div class="bestday" id="weekdayBest"></div>
+      </div>
+
+      <div class="cpanel">
+        <div class="cpanel-head"><h3>کانال‌های فروش</h3><span class="sub">این ماه</span></div>
+        <div class="donut-row">
+          <div class="donut" id="chDonut"></div>
+          <div class="donut-legend" id="chDonutLegend"></div>
+        </div>
+      </div>
+
+      <div class="cpanel">
+        <div class="cpanel-head"><h3>پرفروش‌ترین‌ها (پارتو ۸۰/۲۰)</h3><span class="sub">این ماه</span></div>
+        <div id="chPareto"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="nav">
+    <button class="nbtn active" data-view="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      <span>داشبورد</span>
+    </button>
+    <button class="nbtn" data-view="build">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12H5"/></svg>
+      <span>ساخت</span>
+    </button>
+    <button class="nbtn" data-view="sell">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/><circle cx="7" cy="6" r="1.6" fill="currentColor"/><circle cx="17" cy="18" r="1.6" fill="currentColor"/></svg>
+      <span>فروش</span>
+    </button>
+    <button class="nbtn" data-view="reports">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>
+      <span>گزارش</span>
+    </button>
+  </nav>
+
+  <!-- Modal: تنظیمات -->
+  <div class="modal" id="settingsModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>⚙️ تنظیمات</h3>
+        <button class="icon-btn modal-close" data-close="settingsModal">✕</button>
+      </div>
+      <label>هدف سود ماهانه (تومان)
+        <input type="number" id="setGoal" class="input" min="0" inputmode="numeric">
+      </label>
+      <label>حد هشدار موجودی (تعداد)
+        <input type="number" id="setLow" class="input" min="1" inputmode="numeric">
+      </label>
+      <button class="btn primary big" id="btnSaveSettings">ذخیره</button>
+      <div class="hr"></div>
+      <p class="set-desc">💾 پشتیبان‌گیری از همه‌ی داده‌ها به‌صورت فایل، یا بازیابی از فایل قبلی:</p>
+      <div class="set-actions">
+        <button class="btn" id="btnBackup">⬇️ دانلود پشتیبان</button>
+        <button class="btn" id="btnRestore">⬆️ بازیابی</button>
+        <input type="file" id="restoreFile" accept=".json,application/json" style="display:none">
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: تأیید حذف -->
+  <div class="modal" id="confirmModal" aria-hidden="true">
+    <div class="modal-box modal-sm">
+      <div class="modal-head"><h3>تأیید</h3></div>
+      <p id="confirmText" class="conf-txt"></p>
+      <div class="modal-actions">
+        <button class="btn" data-close-modal="confirmModal">انصراف</button>
+        <button class="btn danger" id="confirmYes">تأیید</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/jalali.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

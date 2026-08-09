@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sculpture Accounting — قالب ۱: داشبورد تحلیلی</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root{
+  --bg:#0c0d10; --panel:#15171c; --panel2:#1d2028;
+  --line:#2a2e38; --line2:#3a3f4d;
+  --acc:#00d4aa; --acc2:#00f5c4; --acc-dim:#009977;
+  --warn:#ff6b4d; --gold:#ffb84d; --red:#ff4d6a; --blue:#4da3ff;
+  --text:#eef2f7; --dim:#8b93a7; --dim2:#5b6275;
+  --r:16px; --font:'Vazirmatn',sans-serif;
+}
+body{font-family:var(--font);background:
+  radial-gradient(800px 500px at 90% -10%,rgba(0,212,170,.08),transparent 60%),
+  radial-gradient(600px 400px at 10% 110%,rgba(255,184,77,.05),transparent 55%),
+  var(--bg);color:var(--text);min-height:100vh;line-height:1.7;padding-bottom:100px;overflow-x:hidden}
+/* Header */
+.hdr{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;background:rgba(12,13,16,.9);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--acc),#008a6d);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,212,170,.35);}
+.brand .logo svg{width:20px;height:20px;color:#fff;}
+.brand h1{font-size:18px;font-weight:900;background:linear-gradient(90deg,var(--acc2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.brand span{font-size:10px;color:var(--dim);display:block;margin-top:-3px;}
+/* Main */
+.main{max-width:640px;margin:0 auto;padding:16px;}
+.greet{margin-bottom:8px;}
+.greet h2{font-size:20px;font-weight:900;}
+.greet p{font-size:12px;color:var(--dim);}
+/* KPI Cards */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0 6px;}
+.kpi{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--r);padding:14px;}
+.kpi .ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:6px;
+  background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.3);}
+.kpi .num{font-size:22px;font-weight:900;color:var(--acc2);}
+.kpi .num.warn{color:var(--warn);}
+.kpi .lbl{font-size:10.5px;color:var(--dim);margin-top:2px;}
+/* Chart Placeholders */
+.chart-wrap{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px;}
+.chart-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:13px;font-weight:800;}
+.chart-title .period{font-size:10px;color:var(--dim);font-weight:600;background:rgba(0,212,170,.1);padding:2px 8px;border-radius:99px;}
+.chart-area{height:140px;background:#0a0c10;border:1px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--dim2);font-size:11px;position:relative;overflow:hidden;}
+.chart-area .hint{text-align:center;line-height:1.6;}
+/* Mini bars for weekday */
+.week-bars{display:flex;align-items:flex-end;gap:5px;height:80px;padding:8px 4px;}
+.wk-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.wk-bar{width:100%;max-width:28px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--acc),#008a6d);transition:height .5s;}
+.wk-bar.today{background:linear-gradient(180deg,var(--gold),#e09600);}
+.wk-lbl{font-size:8px;color:var(--dim2);}
+.wk-val{font-size:9px;font-weight:800;color:var(--acc2);}
+/* Donut placeholder */
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:16px;height:130px;}
+.donut{width:110px;height:110px;border-radius:50%;background:conic-gradient(var(--acc) 0 35%,var(--gold) 35% 55%,var(--blue) 55% 75%,var(--warn) 75% 100%);display:flex;align-items:center;justify-content:center;position:relative;}
+.donut::before{content:'';position:absolute;width:70px;height:70px;border-radius:50%;background:var(--panel);}
+.donut-legend{display:flex;flex-direction:column;gap:6px;font-size:10px;}
+.donut-item{display:flex;align-items:center;gap:6px;}
+.donut-dot{width:9px;height:9px;border-radius:50%;}
+/* Alerts */
+.alerts{display:flex;flex-direction:column;gap:8px;}
+.alert{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid;background:rgba(255,255,255,.02);}
+.alert.warn{border-color:rgba(255,107,77,.3);background:rgba(255,107,77,.05);}
+.alert .dot{width:8px;height:8px;border-radius:50%;flex:none;}
+.alert.warn .dot{background:var(--warn);box-shadow:0 0 8px var(--warn);}
+.alert .txt{font-size:12px;color:var(--dim);flex:1;}
+.alert .val{font-weight:800;color:var(--warn);}
+/* Bottom Nav */
+.nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:50;display:flex;gap:6px;
+  background:rgba(18,21,28,.92);backdrop-filter:blur(18px);border:1px solid var(--line2);border-radius:24px;padding:6px 10px;box-shadow:0 10px 32px rgba(0,0,0,.5);}
+.nbtn{background:none;border:none;color:var(--dim2);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--font);font-size:9px;padding:6px 12px;border-radius:16px;transition:all .2s;}
+.nbtn svg{width:20px;height:20px;}
+.nbtn.on{color:#fff;background:linear-gradient(135deg,var(--acc),#008a6d);box-shadow:0 4px 14px rgba(0,212,170,.4);}
+.nbtn.on svg{filter:drop-shadow(0 0 5px rgba(255,255,255,.4));}
+</style>
+</head>
+<body>
+<header class="hdr">
+<div class="brand">
+<div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+<div><h1>مجسمه‌حساب</h1><span>حسابداری فروش مجسمه</span></div>
+</div>
+</header>
+<main class="main">
+<div class="greet">
+<h2>صبح بخیر، استاد ☀️</h2>
+<p>۱۴۰۴/۰۵/۱۶ — ۵شنبه</p>
+</div>
+<div class="kpis">
+<div class="kpi"><div class="ico">💰</div><div class="num">۱۲,۴۵۰,۰۰۰</div><div class="lbl">درآمد این ماه</div></div>
+<div class="kpi"><div class="ico">🏗️</div><div class="num">۳,۲۰۰,۰۰۰</div><div class="lbl">هزینه ساخت</div></div>
+<div class="kpi"><div class="ico">📈</div><div class="num" style="color:var(--acc2)">۹,۲۵۰,۰۰۰</div><div class="lbl">سود خالص</div></div>
+<div class="kpi"><div class="ico">⚠️</div><div class="num warn">۳</div><div class="lbl">موجودی کم</div></div>
+</div>
+<div class="chart-wrap">
+<div class="chart-title">درآمد در برابر هزینه <span class="period">مهر ۱۴۰۴</span></div>
+<div class="chart-area"><span class="hint">📊 نمودار میله‌ای ماهانه<br>سبز: درآمد / نارنجی: هزینه</span></div>
+</div>
+<div class="chart-wrap">
+<div class="chart-title">فروش بر اساس روز هفته <span class="period">۳۰ روز اخیر</span></div>
+<div class="chart-area" style="height:100px;align-items:flex-end;padding:8px;">
+<div class="week-bars">
+<div class="wk-col"><div class="wk-bar" style="height:85%"></div><span class="wk-lbl">ش</span><span class="wk-val">۱۲</span></div>
+<div class="wk-col"><div class="wk-bar" style="height:45%"></div><span class="wk-lbl">ی</span><span class="wk-val">۶</span></div>
+<div class="wk-col"><div class="wk-bar" style="height:60%"></div><span class="wk-lbl">د</span><span class="wk-val">۸</span></div>
+<div class="wk-col"><div class="wk-bar" style="height:30%"></div><span class="wk-lbl">س</span><span class="wk-val">۴</span></div>
+<div class="wk-col"><div class="wk-bar" style="height:70%"></div><span class="wk-lbl">چ</span><span class="wk-val">۱۰</span></div>
+<div class="wk-col"><div class="wk-bar today" style="height:100%"></div><span class="wk-lbl">پ</span><span class="wk-val">۱۴</span></div>
+<div class="wk-col"><div class="wk-bar" style="height:55%"></div><span class="wk-lbl">ج</span><span class="wk-val">۷</span></div>
+</div>
+</div>
+</div>
+<div class="chart-wrap">
+<div class="chart-title">کانال‌های فروش <span class="period">این ماه</span></div>
+<div class="donut-wrap">
+<div class="donut"></div>
+<div class="donut-legend">
+<div class="donut-item"><span class="donut-dot" style="background:var(--acc)"></span><span>حضوری/غرفه ۳۵٪</span></div>
+<div class="donut-item"><span class="donut-dot" style="background:var(--gold)"></span><span>اینستاگرام ۲۰٪</span></div>
+<div class="donut-item"><span class="donut-dot" style="background:var(--blue)"></span><span>تلفن ۲۰٪</span></div>
+<div class="donut-item"><span class="donut-dot" style="background:var(--warn)"></span><span>باغ‌فردوس ۲۵٪</span></div>
+</div>
+</div>
+</div>
+<div class="chart-wrap" style="padding-bottom:10px;">
+<div class="chart-title">پرفروش‌ترین‌ها (پارِتو) <span class="period">این ماه</span></div>
+<div style="display:flex;flex-direction:column;gap:6px;">
+<div style="display:flex;align-items:center;gap:8px;"><span style="width:28px;font-size:11px;color:var(--acc2)">۱</span><span style="flex:1;font-size:12px">مگس فولادی</span><span style="font-weight:800;color:var(--acc2)">۴۲ فروش</span></div>
+<div style="display:flex;align-items:center;gap:8px;"><span style="width:28px;font-size:11px;color:var(--gold)">۲</span><span style="flex:1;font-size:12px">هواپیما</span><span style="font-weight:800;color:var(--gold)">۲۸ فروش</span></div>
+<div style="display:flex;align-items:center;gap:8px;"><span style="width:28px;font-size:11px;color:var(--blue)">۳</span><span style="flex:1;font-size:12px">ربات</span><span style="font-weight:800;color:var(--blue)">۱۵ فروش</span></div>
+</div>
+</div>
+<div class="alerts">
+<div class="alert warn"><span class="dot"></span><span class="txt">مگس فولادی کمتر از ۳ عدد موند</span><span class="val">موجودی: ۲</span></div>
+<div class="alert warn"><span class="dot"></span><span class="txt">سود این ماه ۱۵٪ کمتر از هدف ۱۰ ملیون</span><span class="val">۹,۲۵۰,۰۰۰</span></div>
+</div>
+</main>
+<nav class="nav">
+<button class="nbtn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span>داشبورد</span></button>
+<button class="nbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12H5"/></svg><span>ساخت</span></button>
+<button class="nbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 17L7 7"/></svg><span>فروش</span></button>
+<button class="nbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M1 12h4M19 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><span>تنظیمات</span></button>
+</nav>
+</body>
+</html>

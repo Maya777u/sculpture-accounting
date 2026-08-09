@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.5",
+    "jsdom": "^24.1.1"
+  }
+}
