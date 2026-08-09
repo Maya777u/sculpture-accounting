@@ -468,6 +468,69 @@ select.input { appearance: none; -webkit-appearance: none; }
 .insight-sub { font-size: 9.5px; color: var(--dim2); }
 .insight-empty { text-align: center; color: var(--dim2); font-size: 11.5px; padding: 10px; }
 
+/* ============ کارت‌های انبار ============ */
+.stock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.stock-card {
+  background: linear-gradient(160deg, var(--panel), var(--bg2));
+  border: 1px solid var(--line); border-radius: 14px; padding: 14px;
+  position: relative; overflow: hidden;
+}
+.stock-card::after {
+  content: ''; position: absolute; top: -20px; left: -20px; width: 60px; height: 60px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(52,211,153,.15), transparent 70%);
+}
+.stock-card.low::after { background: radial-gradient(circle, rgba(248,113,113,.2), transparent 70%); }
+.sc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.sc-name { font-size: 13px; font-weight: 800; }
+.sc-warn {
+  font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 99px;
+  background: rgba(248,113,113,.15); color: var(--red); border: 1px solid rgba(248,113,113,.35);
+}
+.sc-ok {
+  font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 99px;
+  background: rgba(52,211,153,.12); color: var(--green); border: 1px solid rgba(52,211,153,.3);
+}
+.sc-qty {
+  font-size: 30px; font-weight: 900; color: var(--gold2); line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.stock-card.low .sc-qty { color: var(--red); }
+.sc-sub { font-size: 10px; color: var(--dim2); }
+.sc-price { font-size: 10.5px; color: var(--dim); margin-top: 6px; }
+
+/* ============ نمودار روزهای هفته (CSS bars) ============ */
+.wd-bars {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 6px; height: 150px; padding: 8px 2px 0;
+}
+.wd-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; justify-content: flex-end; }
+.wd-bar {
+  width: 100%; max-width: 30px; border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(180deg, var(--cyan), var(--blue));
+  box-shadow: 0 0 12px rgba(34,211,238,.25);
+  min-height: 3px;
+  transition: height .5s;
+}
+.wd-col.best .wd-bar {
+  background: linear-gradient(180deg, var(--gold2), var(--gold));
+  box-shadow: 0 0 14px rgba(240,180,41,.5);
+}
+.wd-val { font-size: 9.5px; font-weight: 800; color: var(--text); }
+.wd-lbl { font-size: 9px; color: var(--dim2); font-weight: 700; margin-top: 1px; }
+
+/* ساخت ماهانه */
+.bars-bar.build-color { background: linear-gradient(180deg, var(--green), #059669); box-shadow: 0 0 10px rgba(52,211,153,.3); }
+
+/* ============ مودال ماه ============ */
+.md-summary { margin-bottom: 10px; }
+.md-days-box { margin-top: 12px; }
+.md-subhead { font-size: 12px; font-weight: 800; color: var(--blue2); margin-bottom: 6px; }
+.md-day-row {
+  font-size: 12px; padding: 7px 10px; background: var(--bg2); border: 1px solid var(--line);
+  border-radius: 9px; margin-bottom: 5px; color: var(--dim);
+}
+.md-day-row b { color: var(--gold2); }
+
 /* ============ مودال ویرایش ============ */
 .edit-actions { display: flex; gap: 10px; margin-top: 14px; }
 .edit-actions .btn { flex: 1; }
