@@ -12,9 +12,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style-forge.css" id="themeCSS">
+  <script>
+    /* تم‌سیچر: ذخیره انتخاب در localStorage */
+    (function() {
+      var saved = localStorage.getItem('sact_theme');
+      if (saved && saved === 'classic') {
+        document.getElementById('themeCSS').href = 'css/style.css';
+      }
+    })();
+  </script>
 </head>
 <body>
+
+  <!-- ذرات ذوب فلز (فقط برای تم Forge) -->
+  <canvas id="forge-particles"></canvas>
+
+  <!-- تم‌سیچر -->
+  <div class="theme-toggle" id="themeToggle">
+    <button class="theme-btn active" data-theme="forge">🔥 Forge</button>
+    <button class="theme-btn" data-theme="classic">📐 Classic</button>
+  </div>
 
   <div id="splash" class="splash">
     <div class="splash-mark">🗿</div>
@@ -303,6 +321,36 @@
 
   <script src="js/jalali.js"></script>
   <script src="js/db.js"></script>
+  <script src="js/forge-particles.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    /* تم‌سیچر: کلیک دکمه‌ها */
+    (function() {
+      var css = document.getElementById('themeCSS');
+      var btns = document.querySelectorAll('.theme-btn');
+      btns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var theme = btn.dataset.theme;
+          btns.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          if (theme === 'classic') {
+            css.href = 'css/style.css';
+            localStorage.setItem('sact_theme', 'classic');
+            document.getElementById('forge-particles').style.display = 'none';
+          } else {
+            css.href = 'css/style-forge.css';
+            localStorage.setItem('sact_theme', 'forge');
+            document.getElementById('forge-particles').style.display = 'block';
+          }
+        });
+      });
+      // مقداردهی اولیه دکمه‌ها
+      var saved = localStorage.getItem('sact_theme');
+      if (saved === 'classic') {
+        btns[0].classList.remove('active');
+        btns[1].classList.add('active');
+      }
+    })();
+  </script>
 </body>
 </html>
