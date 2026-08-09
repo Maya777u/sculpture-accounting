@@ -92,10 +92,18 @@
     state.stocks.forEach(function (st) { stock += st.qty; });
     var profit = income - cost;
 
+    // محاسبه بهترین روز هفته (از کل تاریخچه)
+    var counts = [0,0,0,0,0,0,0];
+    state.sales.forEach(function (s) { counts[J.weekday(s.jy, s.jm, s.jd)] += s.qty; });
+    var total = counts.reduce(function (a,b) { return a+b; }, 0);
+    var bestIdx = counts.indexOf(Math.max.apply(null, counts));
+    var bestDayNames = ['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+    var bestDayName = total ? bestDayNames[bestIdx] : '—';
+
     $('kpiIncome').textContent = fmtMoney(income);
     $('kpiSold').textContent = fnum(sold) + ' عدد';
     $('kpiStock').textContent = fnum(stock) + ' عدد';
-    $('kpiProfit').textContent = fmtMoney(profit);
+    $('kpiBestDay').textContent = bestDayName;
 
     var h = new Date().getHours();
     $('greetText').textContent = h < 12 ? 'صبح بخیر استاد ☀️' : (h < 17 ? 'ظهر بخیر استاد 🌤️' : 'شب بخیر استاد 🌙');
