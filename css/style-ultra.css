@@ -561,6 +561,18 @@ select.input { appearance: none; -webkit-appearance: none; }
 .set-desc { font-size: 11.5px; color: var(--dim); margin-bottom: 10px; }
 .set-actions { display: flex; gap: 9px; }
 .set-actions .btn { flex: 1; }
+.theme-row { display: flex; gap: 8px; }
+.theme-opt {
+  flex: 1; border: 1px solid var(--line); border-radius: 12px;
+  background: rgba(6,10,20,.6); color: var(--dim); font-family: var(--font);
+  font-size: 12px; font-weight: 800; padding: 10px; cursor: pointer;
+  transition: all .2s;
+}
+.theme-opt.active {
+  background: linear-gradient(135deg, var(--aurora1), var(--cyan));
+  color: #fff; border-color: transparent;
+  box-shadow: 0 0 16px rgba(99,102,241,.3);
+}
 
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar { width: 4px; }

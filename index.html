@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style-forge.css" id="themeCSS">
+  <link rel="stylesheet" href="css/style-ultra.css" id="themeCSS">
   <script>
     /* تم‌سیچر: ذخیره انتخاب در localStorage */
     (function() {
@@ -30,12 +30,7 @@
   <!-- ذرات ذوب فلز (فقط برای تم Forge) -->
   <canvas id="forge-particles"></canvas>
 
-  <!-- تم‌سیچر -->
-  <div class="theme-toggle" id="themeToggle">
-    <button class="theme-btn active" data-theme="ultra">⚡ Ultra</button>
-    <button class="theme-btn" data-theme="forge">🔥 Forge</button>
-    <button class="theme-btn" data-theme="classic">📐 Classic</button>
-  </div>
+  <!-- تم‌سیچر (حذف شد — به تنظیمات منتقل شد) -->
 
   <div id="splash" class="splash">
     <div class="splash-mark">🗿</div>
@@ -311,6 +306,12 @@
         <h3>⚙️ تنظیمات</h3>
         <button class="icon-btn modal-close" data-close="settingsModal">✕</button>
       </div>
+      <p class="set-desc">🎨 تم برنامه:</p>
+      <div class="theme-row" id="settingsThemes">
+        <button class="theme-opt active" data-theme="ultra">⚡ Ultra</button>
+        <button class="theme-opt" data-theme="forge">🔥 Forge</button>
+      </div>
+      <div class="hr"></div>
       <p class="set-desc">💾 پشتیبان‌گیری و بازیابی — فایل JSON کامل:</p>
       <div class="set-actions">
         <button class="btn primary" id="btnBackup">⬇️ دانلود پشتیبان</button>
@@ -327,11 +328,11 @@
   <script src="js/forge-particles.js"></script>
   <script src="js/app.js"></script>
   <script>
-    /* تم‌سیچر: کلیک دکمه‌ها — 3 تم */
+    /* تم‌سیچر در تنظیمات — فقط Ultra + Forge */
     (function() {
       var css = document.getElementById('themeCSS');
-      var btns = document.querySelectorAll('.theme-btn');
-      var themes = { ultra: 'css/style-ultra.css', forge: 'css/style-forge.css', classic: 'css/style.css' };
+      var btns = document.querySelectorAll('.theme-opt');
+      var themes = { ultra: 'css/style-ultra.css', forge: 'css/style-forge.css' };
       var pc = document.getElementById('forge-particles');
       btns.forEach(function(btn) {
         btn.addEventListener('click', function() {
@@ -344,9 +345,9 @@
         });
       });
       var saved = localStorage.getItem('sact_theme');
-      if (saved && saved !== 'ultra') {
-        btns[0].classList.remove('active');
-        btns.forEach(function(b) { if (b.dataset.theme === saved) { b.classList.add('active'); css.href = themes[saved]; } });
+      if (saved && themes[saved]) {
+        css.href = themes[saved];
+        btns.forEach(function(b) { b.classList.remove('active'); if (b.dataset.theme === saved) b.classList.add('active'); });
       }
     })();
   </script>
