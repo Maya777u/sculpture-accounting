@@ -194,11 +194,10 @@
     var t = J.today();
     var months = [];
     var i;
+    var abs = t.jy * 12 + (t.jm - 1); // شماره ماه مطلق
     for (i = 5; i >= 0; i--) {
-      var k = t.jy * 100 + t.jm - i;
-      var jy = Math.floor(k / 100), jm = k % 100;
-      if (jm < 1) { jy--; jm += 12; }
-      months.push({ jy: jy, jm: jm, built: 0 });
+      var k = abs - i;
+      months.push({ jy: Math.floor(k / 12), jm: (k % 12) + 1, built: 0 });
     }
     state.builds.forEach(function (b) {
       var k = b.jy * 100 + b.jm;
@@ -385,21 +384,31 @@
         var b = state.builds.filter(function (x) { return x.id === t.id; })[0];
         if (!b) return;
         var oldQty = b.qty;
+        var oldName = b.name;
         var price = parseInt($('ePrice').value, 10) || 0;
         b.name = name; b.qty = qty; b.price = price;
         b.jy = j.jy; b.jm = j.jm; b.jd = j.jd; b.dateKey = JKeyOf(j.jy, j.jm, j.jd);
         DB.put('builds', b);
-        adjustStock(name, qty - oldQty, price);
+        if (oldName !== name) {
+          moveStock(oldName, name, oldQty, qty, price);
+        } else {
+          adjustStock(name, qty - oldQty, price);
+        }
       } else {
         var s = state.sales.filter(function (x) { return x.id === t.id; })[0];
         if (!s) return;
         var oldQty2 = s.qty;
+        var oldName2 = s.name;
         var price2 = parseInt($('ePrice').value, 10) || 0;
         var ch = $('eChannel') ? $('eChannel').value : s.channel;
         s.name = name; s.qty = qty; s.price = price2; s.channel = ch;
         s.jy = j.jy; s.jm = j.jm; s.jd = j.jd; s.dateKey = JKeyOf(j.jy, j.jm, j.jd);
         DB.put('sales', s);
-        adjustStock(name, -(qty - oldQty2));
+        if (oldName2 !== name) {
+          moveStockBySale(oldName2, name, oldQty2, qty);
+        } else {
+          adjustStock(name, -(qty - oldQty2));
+        }
       }
       closeEdit();
       renderAll();
@@ -448,6 +457,43 @@
       st = { id: 'st_' + Date.now(), name: name, qty: delta, price: price || 0, updated: Date.now() };
       DB.add('stocks', st);
       state.stocks.push(st);
+    }
+  }
+
+  /* جابه‌جا کردن موجودی هنگام تغییر نام مجسمه (ویرایش ساخت) */
+  function moveStock(oldName, newName, oldQty, newQty, price) {
+    var stOld = state.stocks.filter(function (s) { return s.name === oldName; })[0];
+    if (stOld) {
+      stOld.qty = Math.max(0, stOld.qty - oldQty);
+      stOld.updated = Date.now();
+      DB.put('stocks', stOld);
+    }
+    var stNew = state.stocks.filter(function (s) { return s.name === newName; })[0];
+    if (stNew) {
+      stNew.qty += newQty;
+      if (price !== undefined) stNew.price = price;
+      stNew.updated = Date.now();
+      DB.put('stocks', stNew);
+    } else if (newQty > 0) {
+      stNew = { id: 'st_' + Date.now(), name: newName, qty: newQty, price: price || 0, updated: Date.now() };
+      DB.add('stocks', stNew);
+      state.stocks.push(stNew);
+    }
+  }
+
+  /* جابه‌جا کردن موجودی هنگام تغییر نام در ویرایش فروش */
+  function moveStockBySale(oldName, newName, soldOld, soldNew) {
+    var stOld = state.stocks.filter(function (s) { return s.name === oldName; })[0];
+    if (stOld) {
+      stOld.qty += soldOld;
+      stOld.updated = Date.now();
+      DB.put('stocks', stOld);
+    }
+    var stNew = state.stocks.filter(function (s) { return s.name === newName; })[0];
+    if (stNew) {
+      stNew.qty = Math.max(0, stNew.qty - soldNew);
+      stNew.updated = Date.now();
+      DB.put('stocks', stNew);
     }
   }
 
@@ -515,7 +561,15 @@
     }
   }
 
-  function isLeap(jy) { return J.weekday(jy, 12, 30) !== 0; }
+  /* اسفند ماه ۱۲: ۳۰ روزه اگر کبیسه باشد.
+   روش مطمئن: اگر بین ۲۹ اسفند تا ۱ فروردین سال بعد ۲ روز فاصله باشد → کبیسه */
+  function isLeap(jy) {
+    try {
+      var g1 = J.toGregorian(jy, 12, 29);
+      var g2 = J.toGregorian(jy + 1, 1, 1);
+      return (g2 - g1) / 86400000 === 2;
+    } catch (e) { return false; }
+  }
 
   /* ================= REPORTS ================= */
   var segViewMode = true;
@@ -532,12 +586,11 @@
     var t = J.today();
     var months = [];
     var i;
+    var abs = t.jy * 12 + (t.jm - 1);
     if (segViewMode) {
       for (i = 5; i >= 0; i--) {
-        var k = t.jy * 100 + t.jm - i;
-        var jy = Math.floor(k / 100), jm = k % 100;
-        if (jm < 1) { jy--; jm += 12; }
-        months.push({ jy: jy, jm: jm, income: 0, sales: 0 });
+        var k = abs - i;
+        months.push({ jy: Math.floor(k / 12), jm: (k % 12) + 1, income: 0, sales: 0 });
       }
     } else {
       for (var mo = 1; mo <= 12; mo++) months.push({ jy: t.jy, jm: mo, income: 0, sales: 0 });

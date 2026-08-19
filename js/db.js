@@ -8,34 +8,37 @@
   var DB_NAME = 'sculpture-accounting';
   var DB_VER = 1;
   var STORES = ['stocks', 'builds', 'sales'];
+  var dbPromise = null;
 
   function open() {
-    return new Promise(function (resolve, reject) {
-      if (global.indexedDB) {
-        var req = global.indexedDB.open(DB_NAME, DB_VER);
-        req.onupgradeneeded = function (e) {
-          var db = e.target.result;
-          if (!db.objectStoreNames.contains('stocks')) {
-            var s = db.createObjectStore('stocks', { keyPath: 'id' });
-            s.createIndex('name', 'name', { unique: false });
-          }
-          if (!db.objectStoreNames.contains('builds')) {
-            var b = db.createObjectStore('builds', { keyPath: 'id', autoIncrement: true });
-            b.createIndex('dateKey', 'dateKey', { unique: false });
-            b.createIndex('name', 'name', { unique: false });
-          }
-          if (!db.objectStoreNames.contains('sales')) {
-            var sl = db.createObjectStore('sales', { keyPath: 'id', autoIncrement: true });
-            sl.createIndex('dateKey', 'dateKey', { unique: false });
-            sl.createIndex('name', 'name', { unique: false });
-          }
-        };
-        req.onsuccess = function (e) { resolve(e.target.result); };
-        req.onerror = function (e) { reject(e.target.error); };
-      } else {
-        reject(new Error('IndexedDB not supported'));
-      }
+    if (dbPromise) return dbPromise;
+    if (!global.indexedDB) {
+      dbPromise = Promise.reject(new Error('IndexedDB not supported'));
+      return dbPromise;
+    }
+    dbPromise = new Promise(function (resolve, reject) {
+      var req = global.indexedDB.open(DB_NAME, DB_VER);
+      req.onupgradeneeded = function (e) {
+        var db = e.target.result;
+        if (!db.objectStoreNames.contains('stocks')) {
+          var s = db.createObjectStore('stocks', { keyPath: 'id' });
+          s.createIndex('name', 'name', { unique: false });
+        }
+        if (!db.objectStoreNames.contains('builds')) {
+          var b = db.createObjectStore('builds', { keyPath: 'id' });
+          b.createIndex('dateKey', 'dateKey', { unique: false });
+          b.createIndex('name', 'name', { unique: false });
+        }
+        if (!db.objectStoreNames.contains('sales')) {
+          var sl = db.createObjectStore('sales', { keyPath: 'id' });
+          sl.createIndex('dateKey', 'dateKey', { unique: false });
+          sl.createIndex('name', 'name', { unique: false });
+        }
+      };
+      req.onsuccess = function (e) { resolve(e.target.result); };
+      req.onerror = function (e) { dbPromise = null; reject(e.target.error); };
     });
+    return dbPromise;
   }
 
   function tx(store, mode, fn) {

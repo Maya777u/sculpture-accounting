@@ -114,7 +114,7 @@
   }
 
   function weekdayShort(jy, jm, jd) {
-    return WEEKDAYS[weekday(jy, jm, jd)];
+    return WEEK_SHORT[weekday(jy, jm, jd)];
   }
 
   function faNum(n) {
