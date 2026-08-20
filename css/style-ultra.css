@@ -379,6 +379,10 @@ select.input { appearance: none; -webkit-appearance: none; }
   background: linear-gradient(180deg, var(--green), #059669);
   box-shadow: 0 0 10px rgba(52,211,153,.3);
 }
+.wd-num { font-size: 10px; font-weight: 900; color: var(--text); min-height: 13px; }
+.wd-num.build { color: var(--green); }
+.wd-col.clickable { cursor: pointer; }
+.wd-col.clickable:active { transform: scale(.95); }
 .wd-val { font-size: 9.5px; font-weight: 800; color: var(--text); }
 .wd-lbl { font-size: 9px; color: var(--dim2); font-weight: 700; margin-top: 1px; }
 
@@ -500,6 +504,12 @@ select.input { appearance: none; -webkit-appearance: none; }
 
 /* ===== مودال ماه ===== */
 .md-summary { margin-bottom: 10px; }
+.week-range {
+  font-size: 11.5px; font-weight: 800; color: var(--cyan);
+  background: rgba(6,10,20,.5); border: 1px solid var(--line);
+  border-radius: 10px; padding: 8px 12px; margin-bottom: 10px;
+  text-align: center;
+}
 .md-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .md-cell { background: rgba(6,10,20,.5); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .md-ico { font-size: 14px; }

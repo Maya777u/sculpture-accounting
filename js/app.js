@@ -718,14 +718,14 @@
     $('monthModal').classList.add('open');
   }
 
-  /* نمودار هفتگی ماه جاری — فروش و ساخت به تفکیک هفته */
+  /* نمودار هفتگی ماه جاری — فروش و ساخت به تفکیک هفته، کلیک → جزئیات */
   function renderWeeklyChart() {
     var box = $('chWeekly');
     if (!box) return;
     var t = J.today();
     var mk = monthOf(t);
 
-    // هفته‌ها را بر اساس شماره روز ماه به ۴ بازه تقسیم می‌کنیم (هفته ۱: روز ۱-۷، ...)
+    // هفته‌ها را بر اساس شماره روز ماه به ۵ بازه تقسیم می‌کنیم (هفته ۱: روز ۱-۷، ...)
     var weekSales = [0, 0, 0, 0, 0];
     var weekBuilds = [0, 0, 0, 0, 0];
     state.sales.forEach(function (s) {
@@ -743,16 +743,77 @@
     var labels = ['هفته ۱', 'هفته ۲', 'هفته ۳', 'هفته ۴', 'هفته ۵'];
 
     box.innerHTML = '<div class="wd-bars">' + weekSales.map(function (c, i) {
-      var hS = Math.max(Math.round(c / max * 100), c > 0 ? 8 : 2);
-      var hB = Math.max(Math.round(weekBuilds[i] / max * 100), weekBuilds[i] > 0 ? 8 : 2);
-      return '<div class="wd-col">' +
+      var hS = Math.max(Math.round(c / max * 100), c > 0 ? 10 : 2);
+      var hB = Math.max(Math.round(weekBuilds[i] / max * 100), weekBuilds[i] > 0 ? 10 : 2);
+      var has = c > 0 || weekBuilds[i] > 0;
+      return '<div class="wd-col' + (has ? ' clickable' : '') + '" data-wk="' + i + '">' +
+        '<span class="wd-num build">' + (weekBuilds[i] > 0 ? fnum(weekBuilds[i]) : '') + '</span>' +
         '<div class="wd-bar build-color" style="height:' + hB + '%"></div>' +
+        '<span class="wd-num">' + (c > 0 ? fnum(c) : '') + '</span>' +
         '<div class="wd-bar" style="height:' + hS + '%"></div>' +
-        '<div class="wd-val">' + (c > 0 || weekBuilds[i] > 0 ? fnum(c) + '/' + fnum(weekBuilds[i]) : '') + '</div>' +
         '<div class="wd-lbl">' + labels[i] + '</div>' +
         '</div>';
     }).join('') + '</div>';
     box.innerHTML += '<div class="chart-legend"><span class="lg lg-in">فروش</span><span class="lg lg-in build-color-lg">ساخت</span></div>';
+
+    box.querySelectorAll('.wd-col.clickable').forEach(function (col) {
+      col.addEventListener('click', function () {
+        openWeekDetail(parseInt(col.dataset.wk, 10));
+      });
+    });
+  }
+
+  /* تعداد روزهای یک ماه شمسی */
+  function monthDays(jm, jy) {
+    if (jm <= 6) return 31;
+    if (jm <= 11) return 30;
+    return isLeap(jy) ? 30 : 29;
+  }
+
+  /* مودال جزئیات هفته — فروش و ساخت با جزئیات کامل */
+  function openWeekDetail(w) {
+    var t = J.today();
+    var jy = t.jy, jm = t.jm;
+    var mk = jy * 100 + jm;
+    var dayStart = w * 7 + 1;
+    var dayEnd = Math.min(dayStart + 6, monthDays(jm, jy));
+    var inWeek = function (x) { return monthOf(x) === mk && x.jd >= dayStart && x.jd <= dayEnd; };
+
+    var weekSales = state.sales.filter(inWeek);
+    var weekBuilds = state.builds.filter(inWeek);
+    var income = 0, sold = 0;
+    weekSales.forEach(function (s) { income += s.qty * s.price; sold += s.qty; });
+    var built = 0;
+    weekBuilds.forEach(function (b) { built += b.qty; });
+
+    var labels = ['هفته ۱', 'هفته ۲', 'هفته ۳', 'هفته ۴', 'هفته ۵'];
+    $('weekModalTitle').textContent = '🗓️ ' + labels[w] + ' — ' + J.monthName(jm) + ' ' + J.faNum(jy);
+    $('weekModalRange').textContent = '📅 ' + J.faNum(dayStart) + ' تا ' + J.faNum(dayEnd) + ' ' + J.monthName(jm);
+
+    $('wkSummary').innerHTML =
+      '<div class="md-grid">' +
+      mdCell('💰 درآمد', fmtMoney(income), 'gold') +
+      mdCell('🛒 فروش', fnum(sold) + ' عدد', 'blue') +
+      mdCell('🏗️ ساخت', fnum(built) + ' عدد', 'green') +
+      '</div>';
+
+    $('wkSales').innerHTML = weekSales.length
+      ? weekSales.slice().sort(function (a, b) { return a.jd - b.jd; }).map(function (s) {
+        var j = { jy: s.jy, jm: s.jm, jd: s.jd };
+        return '<div class="trow"><div class="n"><b>' + s.name + '</b><small>' + J.jToStr(j) + ' · ' + (s.channel || '') + '</small></div>' +
+          '<span class="v gold">' + fnum(s.qty) + ' × ' + fmtMoney(s.price) + ' = <b>' + fmtMoney(s.qty * s.price) + '</b></span></div>';
+      }).join('')
+      : '<div class="empty small">فروشی در این هفته ثبت نشده</div>';
+
+    $('wkBuilds').innerHTML = weekBuilds.length
+      ? weekBuilds.slice().sort(function (a, b) { return a.jd - b.jd; }).map(function (b) {
+        var j = { jy: b.jy, jm: b.jm, jd: b.jd };
+        return '<div class="trow"><div class="n"><b>' + b.name + '</b><small>' + J.jToStr(j) + '</small></div>' +
+          '<span class="v green">+' + fnum(b.qty) + ' عدد</span></div>';
+      }).join('')
+      : '<div class="empty small">ساختی در این هفته ثبت نشده</div>';
+
+    $('weekModal').classList.add('open');
   }
 
   /* نمودار روزهای هفته — SVG تمیز با برچسب */
@@ -965,6 +1026,7 @@
       b.addEventListener('click', function () { $(b.dataset.close).classList.remove('open'); });
     });
     $('monthClose').addEventListener('click', function () { $('monthModal').classList.remove('open'); });
+    $('weekClose').addEventListener('click', function () { $('weekModal').classList.remove('open'); });
 
     var seg6mBtn = $('seg6m');
     seg6mBtn.addEventListener('click', function () {
