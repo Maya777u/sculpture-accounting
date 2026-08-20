@@ -85,58 +85,6 @@
     return parseInt(String(str || '').replace(/[^\d]/g, ''), 10) || 0;
   }
 
-  /* ---------- قیمت به حروف فارسی ---------- */
-  var W_ONES = ['', 'یک', 'دو', 'سه', 'چهار', 'پنج', 'شش', 'هفت', 'هشت', 'نه',
-    'ده', 'یازده', 'دوازده', 'سیزده', 'چهارده', 'پانزده', 'شانزده', 'هفده', 'هجده', 'نوزده'];
-  var W_TENS = ['', '', 'بیست', 'سی', 'چهل', 'پنجاه', 'شصت', 'هفتاد', 'هشتاد', 'نود'];
-  var W_THOUSAND = ['', 'هزار', 'میلیون', 'میلیارد', 'هزار میلیارد', 'تریلیون'];
-  function threeToWords(n) {
-    n = Math.floor(n);
-    if (n <= 0) return '';
-    var parts = [];
-    var h = Math.floor(n / 100);
-    var r = n % 100;
-    if (h === 1) parts.push('صد');
-    else if (h === 2) parts.push('دویست');
-    else if (h === 3) parts.push('سیصد');
-    else if (h > 3) parts.push(W_ONES[h] + 'صد');
-    if (r > 0) {
-      if (r < 20) parts.push(W_ONES[r]);
-      else {
-        var t = Math.floor(r / 10), o = r % 10;
-        parts.push(W_TENS[t] + (o ? ' و ' + W_ONES[o] : ''));
-      }
-    }
-    return parts.join(' و ');
-  }
-  function numberToWords(num) {
-    num = Math.floor(Math.abs(num));
-    if (!num) return 'صفر';
-    var groups = [];
-    while (num > 0) { groups.push(num % 1000); num = Math.floor(num / 1000); }
-    var out = [];
-    for (var i = groups.length - 1; i >= 0; i--) {
-      if (groups[i]) {
-        var t = threeToWords(groups[i]);
-        out.push(t + (W_THOUSAND[i] ? ' ' + W_THOUSAND[i] : ''));
-      }
-    }
-    return out.join(' و ');
-  }
-
-  /* نمایش قیمت به حروف زیر فیلد قیمت — فقط ثبت ساخت و فروش */
-  function bindPriceWords(input, holder) {
-    if (!input || !holder) return;
-    function update() {
-      var num = parseNum(input.value);
-      holder.textContent = num > 0 ? numberToWords(num) + ' تومان' : '';
-      holder.style.display = num > 0 ? '' : 'none';
-    }
-    input.addEventListener('input', update);
-    input.addEventListener('blur', update);
-    update();
-  }
-
   /* ---------- Render All ---------- */
   function renderAll() {
     renderHeaderDate();
@@ -439,7 +387,6 @@
     }
     $('editModal').classList.add('open');
     bindMoneyInput($('ePrice'));
-    bindPriceWords($('ePrice'), $('ePriceWords'));
   }
 
   function makeField(lbl, id, type, val, min) {
@@ -447,8 +394,7 @@
     if (isMoney) {
       var v = (val === undefined || val === null || val === '') ? '' : Number(val).toLocaleString('en-US');
       return '<label class="f-full">' + lbl +
-        '<input id="' + id + '" class="input" type="text" inputmode="numeric" dir="ltr" style="text-align:left" value="' + v + '">' +
-        '<div class="price-words" id="ePriceWords"></div></label>';
+        '<input id="' + id + '" class="input" type="text" inputmode="numeric" dir="ltr" style="text-align:left" value="' + v + '"></label>';
     }
     return '<label class="f-full">' + lbl +
       '<input id="' + id + '" class="input" type="' + type + '" value="' + (val === undefined ? '' : val) + '"' +
@@ -1008,9 +954,6 @@
     bindMoneyInput($('bPrice'));
     bindMoneyInput($('sPrice'));
     bindMoneyInput($('ePrice'));
-    bindPriceWords($('bPrice'), $('bPriceWords'));
-    bindPriceWords($('sPrice'), $('sPriceWords'));
-    bindPriceWords($('ePrice'), $('ePriceWords'));
     $('btnBackup').addEventListener('click', doBackup);
     $('btnRestore').addEventListener('click', function () { $('restoreFile').click(); });
     $('restoreFile').addEventListener('change', function (e) {

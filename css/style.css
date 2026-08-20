@@ -207,13 +207,6 @@ label .req { color: var(--red); }
 .input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,.14); }
 select.input { appearance: none; -webkit-appearance: none; }
 
-/* نمایش قیمت به حروف زیر فیلد */
-.price-words {
-  font-size: 10.5px; color: var(--green); font-weight: 700;
-  margin-top: 4px; min-height: 14px; letter-spacing: 0;
-}
-.price-words:empty { display: none; }
-
 /* Buttons */
 .btn {
   font-family: var(--font); font-size: 13px; font-weight: 800;
