@@ -8,6 +8,11 @@
   var $ = function (id) { return document.getElementById(id); };
   var J = window.Jalali;
 
+  /* شناسه یکتا و امن — جلوگیری از کولیشن */
+  function newId() {
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  }
+
   var state = {
     stocks: [], builds: [], sales: [],
     settings: { goal: 10000000, lowStock: 3 },
@@ -59,6 +64,78 @@
     return J.faNum(Math.round(x).toLocaleString('en-US').replace(/,/g, '٬'));
   }
   function fmtMoney(x) { return fnum(x) + ' تومان'; }
+
+  /* قالب‌بندی زنده اعداد با جداکننده هزارگان — ورودی قیمت */
+  function bindMoneyInput(input) {
+    if (!input) return;
+    input.addEventListener('input', function () {
+      var digits = input.value.replace(/[^\d]/g, '');
+      if (!digits) { input.value = ''; return; }
+      var num = parseInt(digits, 10);
+      if (isNaN(num)) return;
+      input.value = num.toLocaleString('en-US');
+    });
+    input.addEventListener('blur', function () {
+      input.value = input.value.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    });
+  }
+
+  /* تبدیل اعداد با جداکننده به عدد — برای ذخیره */
+  function parseNum(str) {
+    return parseInt(String(str || '').replace(/[^\d]/g, ''), 10) || 0;
+  }
+
+  /* ---------- قیمت به حروف فارسی ---------- */
+  var W_ONES = ['', 'یک', 'دو', 'سه', 'چهار', 'پنج', 'شش', 'هفت', 'هشت', 'نه',
+    'ده', 'یازده', 'دوازده', 'سیزده', 'چهارده', 'پانزده', 'شانزده', 'هفده', 'هجده', 'نوزده'];
+  var W_TENS = ['', '', 'بیست', 'سی', 'چهل', 'پنجاه', 'شصت', 'هفتاد', 'هشتاد', 'نود'];
+  var W_THOUSAND = ['', 'هزار', 'میلیون', 'میلیارد', 'هزار میلیارد', 'تریلیون'];
+  function threeToWords(n) {
+    n = Math.floor(n);
+    if (n <= 0) return '';
+    var parts = [];
+    var h = Math.floor(n / 100);
+    var r = n % 100;
+    if (h === 1) parts.push('صد');
+    else if (h === 2) parts.push('دویست');
+    else if (h === 3) parts.push('سیصد');
+    else if (h > 3) parts.push(W_ONES[h] + 'صد');
+    if (r > 0) {
+      if (r < 20) parts.push(W_ONES[r]);
+      else {
+        var t = Math.floor(r / 10), o = r % 10;
+        parts.push(W_TENS[t] + (o ? ' و ' + W_ONES[o] : ''));
+      }
+    }
+    return parts.join(' و ');
+  }
+  function numberToWords(num) {
+    num = Math.floor(Math.abs(num));
+    if (!num) return 'صفر';
+    var groups = [];
+    while (num > 0) { groups.push(num % 1000); num = Math.floor(num / 1000); }
+    var out = [];
+    for (var i = groups.length - 1; i >= 0; i--) {
+      if (groups[i]) {
+        var t = threeToWords(groups[i]);
+        out.push(t + (W_THOUSAND[i] ? ' ' + W_THOUSAND[i] : ''));
+      }
+    }
+    return out.join(' و ');
+  }
+
+  /* نمایش قیمت به حروف زیر فیلد قیمت — فقط ثبت ساخت و فروش */
+  function bindPriceWords(input, holder) {
+    if (!input || !holder) return;
+    function update() {
+      var num = parseNum(input.value);
+      holder.textContent = num > 0 ? numberToWords(num) + ' تومان' : '';
+      holder.style.display = num > 0 ? '' : 'none';
+    }
+    input.addEventListener('input', update);
+    input.addEventListener('blur', update);
+    update();
+  }
 
   /* ---------- Render All ---------- */
   function renderAll() {
@@ -135,7 +212,7 @@
     $('btnBuild').addEventListener('click', function () {
       var name = $('bName').value.trim();
       var qty = parseInt($('bQty').value, 10);
-      var price = parseInt($('bPrice').value, 10) || 0;
+      var price = parseNum($('bPrice').value);
       if (!name) { toast('نام مجسمه را وارد کن', 'err'); return; }
       if (!qty || qty < 1) { toast('تعداد نامعتبر است', 'err'); return; }
       var dateStr = $('bDate').value.trim();
@@ -143,7 +220,7 @@
       if (!j) { toast('تاریخ نامعتبر', 'err'); return; }
 
       var build = {
-        id: Date.now() + Math.floor(Math.random() * 1000),
+        id: newId(),
         name: name, qty: qty, price: price,
         jy: j.jy, jm: j.jm, jd: j.jd,
         dateKey: JKeyOf(j.jy, j.jm, j.jd)
@@ -174,7 +251,7 @@
       box.innerHTML = '<div class="empty">هنوز ساخت‌ی ثبت نشده 🏗️</div>';
       return;
     }
-    var sorted = state.builds.slice().sort(function (a, b) { return b.id - a.id; }).slice(0, 20);
+    var sorted = state.builds.slice().sort(function (a, b) { return String(b.id) > String(a.id) ? 1 : -1; }).slice(0, 20);
     box.innerHTML = sorted.map(function (b) {
       var j = { jy: b.jy, jm: b.jm, jd: b.jd };
       return '<div class="trow clickable" data-type="build" data-id="' + b.id + '">' +
@@ -183,7 +260,7 @@
     }).join('');
     box.querySelectorAll('.trow.clickable').forEach(function (row) {
       row.addEventListener('click', function () {
-        openEditModal({ type: row.dataset.type, id: parseInt(row.dataset.id, 10) });
+        openEditModal({ type: row.dataset.type, id: row.dataset.id });
       });
     });
   }
@@ -283,7 +360,7 @@
     $('btnSellAdd').addEventListener('click', function () {
       var name = $('sName').value;
       var qty = parseInt($('sQty').value, 10);
-      var price = parseInt($('sPrice').value, 10) || 0;
+      var price = parseNum($('sPrice').value);
       var channel = $('sChannel').value;
       var st = state.stocks.filter(function (s) { return s.name === name; })[0];
       if (!st) { toast('این مجسمه در انبار نیست', 'err'); return; }
@@ -295,7 +372,7 @@
       if (!j) { toast('تاریخ نامعتبر', 'err'); return; }
 
       var sale = {
-        id: Date.now() + Math.floor(Math.random() * 1000),
+        id: newId(),
         name: name, qty: qty, price: price, channel: channel,
         jy: j.jy, jm: j.jm, jd: j.jd,
         dateKey: JKeyOf(j.jy, j.jm, j.jd)
@@ -321,7 +398,7 @@
       box.innerHTML = '<div class="empty small">هنوز فروشی ثبت نشده 🕘</div>';
       return;
     }
-    var sorted = state.sales.slice().sort(function (a, b) { return b.id - a.id; }).slice(0, 15);
+    var sorted = state.sales.slice().sort(function (a, b) { return String(b.id) > String(a.id) ? 1 : -1; }).slice(0, 15);
     box.innerHTML = sorted.map(function (s) {
       var j = { jy: s.jy, jm: s.jm, jd: s.jd };
       return '<div class="trow clickable" data-type="sale" data-id="' + s.id + '">' +
@@ -329,7 +406,7 @@
         '<span class="v gold">' + fmtMoney(s.qty * s.price) + ' <span class="edit-ic">✏️</span></span></div>';
     }).join('');
     box.querySelectorAll('.trow.clickable').forEach(function (row) {
-      row.addEventListener('click', function () { openEditModal({ type: row.dataset.type, id: parseInt(row.dataset.id, 10) }); });
+      row.addEventListener('click', function () { openEditModal({ type: row.dataset.type, id: row.dataset.id }); });
     });
   }
 
@@ -339,7 +416,7 @@
     var fields = $('editFields');
     fields.innerHTML = '';
     if (target.type === 'build') {
-      var b = state.builds.filter(function (x) { return x.id === target.id; })[0];
+      var b = state.builds.filter(function (x) { return String(x.id) === String(target.id); })[0];
       if (!b) { toast('ردیف پیدا نشد', 'err'); return; }
       $('editModalTitle').textContent = '✏️ ویرایش ساخت — ' + b.name;
       fields.innerHTML =
@@ -348,7 +425,7 @@
         makeField('قیمت فروش', 'ePrice', 'number', b.price) +
         makeField('تاریخ (شمسی)', 'eDate', 'text', J.jToStrEn(b.jy, b.jm, b.jd));
     } else {
-      var s = state.sales.filter(function (x) { return x.id === target.id; })[0];
+      var s = state.sales.filter(function (x) { return String(x.id) === String(target.id); })[0];
       if (!s) { toast('ردیف پیدا نشد', 'err'); return; }
       $('editModalTitle').textContent = '✏️ ویرایش فروش — ' + s.name;
       var opts = CHANNELS.map(function (c) { return '<option' + (c === s.channel ? ' selected' : '') + '>' + c + '</option>'; }).join('');
@@ -361,9 +438,18 @@
       $('eChannel').value = s.channel;
     }
     $('editModal').classList.add('open');
+    bindMoneyInput($('ePrice'));
+    bindPriceWords($('ePrice'), $('ePriceWords'));
   }
 
   function makeField(lbl, id, type, val, min) {
+    var isMoney = (id === 'ePrice');
+    if (isMoney) {
+      var v = (val === undefined || val === null || val === '') ? '' : Number(val).toLocaleString('en-US');
+      return '<label class="f-full">' + lbl +
+        '<input id="' + id + '" class="input" type="text" inputmode="numeric" dir="ltr" style="text-align:left" value="' + v + '">' +
+        '<div class="price-words" id="ePriceWords"></div></label>';
+    }
     return '<label class="f-full">' + lbl +
       '<input id="' + id + '" class="input" type="' + type + '" value="' + (val === undefined ? '' : val) + '"' +
       (min ? ' min="' + min + '"' : '') + '></label>';
@@ -381,11 +467,11 @@
       if (!j) { toast('تاریخ نامعتبر', 'err'); return; }
 
       if (t.type === 'build') {
-        var b = state.builds.filter(function (x) { return x.id === t.id; })[0];
+        var b = state.builds.filter(function (x) { return String(x.id) === String(t.id); })[0];
         if (!b) return;
         var oldQty = b.qty;
         var oldName = b.name;
-        var price = parseInt($('ePrice').value, 10) || 0;
+        var price = parseNum($('ePrice').value);
         b.name = name; b.qty = qty; b.price = price;
         b.jy = j.jy; b.jm = j.jm; b.jd = j.jd; b.dateKey = JKeyOf(j.jy, j.jm, j.jd);
         DB.put('builds', b);
@@ -395,11 +481,11 @@
           adjustStock(name, qty - oldQty, price);
         }
       } else {
-        var s = state.sales.filter(function (x) { return x.id === t.id; })[0];
+        var s = state.sales.filter(function (x) { return String(x.id) === String(t.id); })[0];
         if (!s) return;
         var oldQty2 = s.qty;
         var oldName2 = s.name;
-        var price2 = parseInt($('ePrice').value, 10) || 0;
+        var price2 = parseNum($('ePrice').value);
         var ch = $('eChannel') ? $('eChannel').value : s.channel;
         s.name = name; s.qty = qty; s.price = price2; s.channel = ch;
         s.jy = j.jy; s.jm = j.jm; s.jd = j.jd; s.dateKey = JKeyOf(j.jy, j.jm, j.jd);
@@ -419,18 +505,18 @@
       var t = state.editTarget;
       if (!t) return;
       if (t.type === 'build') {
-        var b = state.builds.filter(function (x) { return x.id === t.id; })[0];
+        var b = state.builds.filter(function (x) { return String(x.id) === String(t.id); })[0];
         if (b) {
           DB.del('builds', b.id);
           adjustStock(b.name, -b.qty);
-          state.builds = state.builds.filter(function (x) { return x.id !== b.id; });
+          state.builds = state.builds.filter(function (x) { return String(x.id) !== String(b.id); });
         }
       } else {
-        var s = state.sales.filter(function (x) { return x.id === t.id; })[0];
+        var s = state.sales.filter(function (x) { return String(x.id) === String(t.id); })[0];
         if (s) {
           DB.del('sales', s.id);
           adjustStock(s.name, s.qty);
-          state.sales = state.sales.filter(function (x) { return x.id !== s.id; });
+          state.sales = state.sales.filter(function (x) { return String(x.id) !== String(s.id); });
         }
       }
       closeEdit();
@@ -576,6 +662,7 @@
 
   function renderReports() {
     renderMonthlyBars();
+    renderWeeklyChart();
     renderWeekdayChart();
     renderDonut();
     renderPareto();
@@ -640,16 +727,14 @@
     var builds = state.builds.filter(function (b) { return monthOf(b) === mk; });
     var income = 0, soldQty = 0;
     sales.forEach(function (s) { income += s.qty * s.price; soldQty += s.qty; });
-    var builtQty = 0, cost = 0;
-    builds.forEach(function (b) { builtQty += b.qty; cost += b.qty * (b.cost || 0); });
-    var profit = income - cost;
+    var builtQty = 0;
+    builds.forEach(function (b) { builtQty += b.qty; });
 
     $('mdSummary').innerHTML =
       '<div class="md-grid">' +
       mdCell('💰 درآمد', fmtMoney(income), 'gold') +
       mdCell('🛒 تعداد فروش', fnum(soldQty) + ' عدد', 'blue') +
       mdCell('🏗️ تعداد ساخت', fnum(builtQty) + ' عدد', 'green') +
-      mdCell('📈 سود', fmtMoney(profit), profit >= 0 ? 'gold' : 'red') +
       '</div>';
 
     // روزهای پرفروش
@@ -661,7 +746,11 @@
     var topDays = Object.keys(daysAgg).map(function (k) { return { d: k, q: daysAgg[k] }; })
       .sort(function (a, b) { return b.q - a.q; }).slice(0, 3);
     $('mdDays').innerHTML = topDays.length
-      ? topDays.map(function (r) { return '<div class="md-day-row">📅 ' + J.faNum(r.d) + ' — <b>' + fnum(r.q) + ' فروش</b></div>'; }).join('')
+      ? topDays.map(function (r) {
+          var parts = r.d.split('/');
+          var name = J.monthName(parseInt(parts[1], 10));
+          return '<div class="md-day-row">📅 ' + J.faNum(parts[2]) + ' ' + name + ' — <b>' + fnum(r.q) + ' فروش</b></div>';
+        }).join('')
       : '<div class="empty small">فروشی نبود</div>';
 
     // لیست فروش‌های ماه
@@ -681,6 +770,43 @@
       : '<div class="empty small">ساختی در این ماه ثبت نشده</div>';
 
     $('monthModal').classList.add('open');
+  }
+
+  /* نمودار هفتگی ماه جاری — فروش و ساخت به تفکیک هفته */
+  function renderWeeklyChart() {
+    var box = $('chWeekly');
+    if (!box) return;
+    var t = J.today();
+    var mk = monthOf(t);
+
+    // هفته‌ها را بر اساس شماره روز ماه به ۴ بازه تقسیم می‌کنیم (هفته ۱: روز ۱-۷، ...)
+    var weekSales = [0, 0, 0, 0, 0];
+    var weekBuilds = [0, 0, 0, 0, 0];
+    state.sales.forEach(function (s) {
+      if (monthOf(s) !== mk) return;
+      var w = Math.min(Math.floor((s.jd - 1) / 7), 4);
+      weekSales[w] += s.qty;
+    });
+    state.builds.forEach(function (b) {
+      if (monthOf(b) !== mk) return;
+      var w = Math.min(Math.floor((b.jd - 1) / 7), 4);
+      weekBuilds[w] += b.qty;
+    });
+
+    var max = Math.max.apply(null, weekSales.concat(weekBuilds).concat([1]));
+    var labels = ['هفته ۱', 'هفته ۲', 'هفته ۳', 'هفته ۴', 'هفته ۵'];
+
+    box.innerHTML = '<div class="wd-bars">' + weekSales.map(function (c, i) {
+      var hS = Math.max(Math.round(c / max * 100), c > 0 ? 8 : 2);
+      var hB = Math.max(Math.round(weekBuilds[i] / max * 100), weekBuilds[i] > 0 ? 8 : 2);
+      return '<div class="wd-col">' +
+        '<div class="wd-bar build-color" style="height:' + hB + '%"></div>' +
+        '<div class="wd-bar" style="height:' + hS + '%"></div>' +
+        '<div class="wd-val">' + (c > 0 || weekBuilds[i] > 0 ? fnum(c) + '/' + fnum(weekBuilds[i]) : '') + '</div>' +
+        '<div class="wd-lbl">' + labels[i] + '</div>' +
+        '</div>';
+    }).join('') + '</div>';
+    box.innerHTML += '<div class="chart-legend"><span class="lg lg-in">فروش</span><span class="lg lg-in build-color-lg">ساخت</span></div>';
   }
 
   /* نمودار روزهای هفته — SVG تمیز با برچسب */
@@ -879,6 +1005,12 @@
   function bindButtons() {
     bindBuild();
     bindSell();
+    bindMoneyInput($('bPrice'));
+    bindMoneyInput($('sPrice'));
+    bindMoneyInput($('ePrice'));
+    bindPriceWords($('bPrice'), $('bPriceWords'));
+    bindPriceWords($('sPrice'), $('sPriceWords'));
+    bindPriceWords($('ePrice'), $('ePriceWords'));
     $('btnBackup').addEventListener('click', doBackup);
     $('btnRestore').addEventListener('click', function () { $('restoreFile').click(); });
     $('restoreFile').addEventListener('change', function (e) {

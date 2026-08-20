@@ -274,6 +274,13 @@ label .req { color: var(--red); }
 }
 select.input { appearance: none; -webkit-appearance: none; }
 
+/* نمایش قیمت به حروف زیر فیلد */
+.price-words {
+  font-size: 10.5px; color: var(--green); font-weight: 700;
+  margin-top: 4px; min-height: 14px; letter-spacing: 0;
+}
+.price-words:empty { display: none; }
+
 /* ===== دکمه‌ها با شیمر ===== */
 .btn {
   font-family: var(--font); font-size: 13px; font-weight: 800;
@@ -358,6 +365,7 @@ select.input { appearance: none; -webkit-appearance: none; }
 .lg { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; }
 .lg::before { content: ''; width: 9px; height: 9px; border-radius: 3px; }
 .lg-in::before { background: linear-gradient(180deg, var(--cyan), var(--aurora1)); }
+.lg.build-color-lg::before { background: linear-gradient(180deg, var(--green), #059669); }
 .lg-note { opacity: .7; }
 
 /* ===== نمودار روزهای هفته ===== */
@@ -373,6 +381,10 @@ select.input { appearance: none; -webkit-appearance: none; }
 .wd-col.best .wd-bar {
   background: linear-gradient(180deg, var(--gold2), var(--gold));
   box-shadow: 0 0 16px rgba(245,158,11,.5);
+}
+.wd-bar.build-color {
+  background: linear-gradient(180deg, var(--green), #059669);
+  box-shadow: 0 0 10px rgba(52,211,153,.3);
 }
 .wd-val { font-size: 9.5px; font-weight: 800; color: var(--text); }
 .wd-lbl { font-size: 9px; color: var(--dim2); font-weight: 700; margin-top: 1px; }
@@ -587,4 +599,11 @@ select.input { appearance: none; -webkit-appearance: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ===== کاهش مصرف باتری: توقف انیمیشن‌های سنگین وقتی صفحه مخفی است ===== */
+body.energy-save::before, body.energy-save::after,
+body.energy-save .cpanel::after,
+body.energy-save .qaction::before {
+  animation-play-state: paused !important;
 }

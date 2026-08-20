@@ -101,7 +101,8 @@
             <input type="number" id="bQty" class="input" min="1" value="1" inputmode="numeric">
           </label>
           <label class="f-half">قیمت فروش هر عدد
-            <input type="number" id="bPrice" class="input" min="0" placeholder="450000" inputmode="numeric">
+            <input type="text" id="bPrice" class="input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰" dir="ltr" style="text-align:left">
+            <div class="price-words" id="bPriceWords"></div>
           </label>
           <label class="f-full">تاریخ ساخت (شمسی)
             <div class="date-row">
@@ -153,7 +154,8 @@
             <input type="number" id="sQty" class="input" min="1" value="1" inputmode="numeric">
           </label>
           <label class="f-half">قیمت هر عدد
-            <input type="number" id="sPrice" class="input" min="0" inputmode="numeric">
+            <input type="text" id="sPrice" class="input" inputmode="numeric" dir="ltr" style="text-align:left">
+            <div class="price-words" id="sPriceWords"></div>
           </label>
           <label class="f-full">نحوه فروش
             <select id="sChannel" class="input">
@@ -194,6 +196,11 @@
         </div>
         <div class="bar-group" id="chMonthlyBars"></div>
         <div class="chart-legend"><span class="lg lg-in">درآمد</span><span class="lg-note">برای جزئیات کامل هر ماه، روی ستون بزن</span></div>
+      </div>
+
+      <div class="cpanel">
+        <div class="cpanel-head"><h3>🗓️ فروش هفتگی (این ماه)</h3><span class="sub">فروش / ساخت به تفکیک هفته</span></div>
+        <div id="chWeekly" class="chart-svg"></div>
       </div>
 
       <div class="cpanel">
