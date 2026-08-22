@@ -78,7 +78,10 @@
       if (!digits) { input.value = ''; return; }
       var num = parseInt(digits, 10);
       if (isNaN(num)) return;
-      input.value = num.toLocaleString('en-US');
+      var formatted = num.toLocaleString('en-US');
+      var atEnd = input.selectionStart === input.value.length;
+      input.value = formatted;
+      if (atEnd) input.setSelectionRange(formatted.length, formatted.length);
     });
     input.addEventListener('blur', function () {
       input.value = faToEn(input.value).replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');

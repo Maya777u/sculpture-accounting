@@ -132,9 +132,10 @@ label .req{color:var(--red)}
 .input:focus{border-color:var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft), inset 0 1px 0 rgba(255,255,255,.06);background:rgba(0,0,0,.34)}
 select.input{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg, transparent 50%, var(--dim) 50%), linear-gradient(135deg, var(--dim) 50%, transparent 50%);background-position:calc(14px) calc(50% - 3px), calc(9px) calc(50% - 3px);background-size:5px 5px, 5px 5px;background-repeat:no-repeat;padding-inline-start:28px}
 .input.ltr{direction:ltr;text-align:left;font-variant-numeric:tabular-nums;letter-spacing:.2px}
-.input.price-input{padding-left:52px}
-.price-wrap{position:relative}
-.price-wrap::after{content:'تومان';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:800;color:var(--dim2);letter-spacing:.2px;pointer-events:none;margin-top:2px}
+.input.price-input{padding-left:12px;padding-right:12px;text-align:center;direction:ltr;font-weight:800}
+.price-wrap{position:relative;display:block}
+.price-wrap .input{width:100%}
+.price-unit{position:absolute;left:8px;bottom:-13px;font-size:8.5px;font-weight:700;color:var(--dim2);pointer-events:none}
 
 /* ---- Stepper (تعداد -/+) گرافیکی ---- */
 .stepper{
