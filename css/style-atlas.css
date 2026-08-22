@@ -452,3 +452,27 @@ select.input{appearance:none;-webkit-appearance:none;background-image:linear-gra
 .wk-table .num{font-variant-numeric:tabular-nums;font-weight:800;text-align:left;direction:ltr;white-space:nowrap}
 .week-range{font-size:11px;font-weight:800;color:var(--dim);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:10px;text-align:center}
 
+/* === PATCH 2026-08 — Ultra single-theme + animated logo + build combo + empty badge === */
+@keyframes logoPulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 var(--accent-glow))}50%{transform:scale(1.06);filter:drop-shadow(0 0 12px var(--accent-glow))}}
+@keyframes logoSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.splash-mark-anim{animation:logoPulse 1.6s ease-in-out infinite}
+.splash-mark-anim svg{animation:logoSpin 6s linear infinite;transform-origin:center}
+.brand-mark-new{animation:logoPulse 2.2s ease-in-out infinite}
+.brand-mark-new svg{animation:logoSpin 9s linear infinite;transform-origin:center}
+/* build combo */
+.combo-wrap{position:relative;display:flex;align-items:center;gap:0}
+.combo-wrap .combo-input{flex:1}
+.combo-btn{width:40px;height:38px;flex:none;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);border-inline-start:none;border-radius:0 10px 10px 0;margin-top:4px;color:var(--dim);cursor:pointer;transition:.14s}
+.combo-btn:hover{background:rgba(255,255,255,.10);color:var(--text)}
+.combo-btn:active{transform:scale(.96)}
+.combo-wrap.open .combo-btn{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.combo-wrap.open .combo-input{border-color:var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft)}
+.combo-list{position:absolute;top:calc(100% + 6px);inset-inline:0;z-index:30;background:linear-gradient(180deg,#0F2346,#0B1730);border:1px solid rgba(255,255,255,.13);border-radius:12px;box-shadow:0 14px 30px rgba(0,0,0,.45);max-height:220px;overflow:auto;padding:6px;display:grid;gap:4px}
+.combo-opt{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:9px;padding:9px 11px;text-align:right;font:700 12px var(--font);color:var(--text);cursor:pointer;transition:.12s}
+.combo-opt:hover{background:rgba(255,255,255,.08);border-color:var(--line2);transform:translateY(-1px)}
+.combo-empty{padding:12px;text-align:center;color:var(--dim2);font:700 11px var(--font)}
+/* stock empty badge */
+.empty-badge{background:rgba(239,68,68,.14) !important;color:#FCA5A5 !important;border-color:rgba(239,68,68,.28) !important}
+.stock-card.empty{opacity:.72;border-color:rgba(239,68,68,.18)}
+.stock-card.empty .sc-qty{color:var(--dim2)}
+

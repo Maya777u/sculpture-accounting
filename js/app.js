@@ -29,6 +29,7 @@
     if (!window.Jalali) { console.error('jalali.js missing'); return; }
     hideSplash();
     bindNav();
+    setTimeout(bindBuildCombo, 300);
     bindButtons();
     bindCal();
     bindEdit();
@@ -167,14 +168,46 @@
   }
 
   /* ---------- Render All ---------- */
-  function renderBuildDatalist(){
-    var dl=document.getElementById('bNameList');
-    if(!dl) return;
+  function getBuildNames(){
     var names={};
-    state.builds.forEach(function(b){ names[b.name]=1; });
-    state.stocks.forEach(function(s){ names[s.name]=1; });
-    var arr=Object.keys(names).sort();
-    dl.innerHTML=arr.map(function(n){ return '<option value="'+n+'">'; }).join('');
+    state.builds.forEach(function(b){ if(b.name) names[b.name]=1; });
+    state.stocks.forEach(function(s){ if(s.name) names[s.name]=1; });
+    return Object.keys(names).sort();
+  }
+  function renderBuildDatalist(){
+    var box=document.getElementById('bNameListBox');
+    var dl=document.getElementById('bNameList');
+    var names=getBuildNames();
+    if(box){
+      if(!names.length){ box.innerHTML='<div class="combo-empty">هنوز مجسمه‌ای ثبت نشده</div>'; }
+      else { box.innerHTML=names.map(function(n){ return '<button type="button" class="combo-opt" data-v="'+n.replace(/"/g,'&quot;')+'">'+n+'</button>'; }).join(''); }
+    }
+    if(dl){ dl.innerHTML=names.map(function(n){ return '<option value="'+n+'">'; }).join(''); }
+  }
+  function bindBuildCombo(){
+    var wrap=document.getElementById('bNameCombo');
+    var inp=document.getElementById('bName');
+    var btn=document.getElementById('bNameDropBtn');
+    var box=document.getElementById('bNameListBox');
+    if(!wrap||!inp||!btn||!box) return;
+    function open(){ renderBuildDatalist(); box.hidden=false; wrap.classList.add('open'); }
+    function close(){ box.hidden=true; wrap.classList.remove('open'); }
+    btn.addEventListener('click', function(e){ e.stopPropagation(); if(box.hidden) open(); else close(); });
+    inp.addEventListener('focus', function(){ if(getBuildNames().length) open(); });
+    inp.addEventListener('input', function(){
+      var q=inp.value.trim().toLowerCase();
+      var names=getBuildNames().filter(function(n){ return !q || n.toLowerCase().indexOf(q)!==-1; });
+      if(!names.length){ box.innerHTML='<div class="combo-empty">موردی یافت نشد — همین نام جدید ثبت می‌شود</div>'; box.hidden=false; return; }
+      box.innerHTML=names.map(function(n){ return '<button type="button" class="combo-opt" data-v="'+n.replace(/"/g,'&quot;')+'">'+n+'</button>'; }).join('');
+      box.hidden=false; wrap.classList.add('open');
+    });
+    box.addEventListener('click', function(e){
+      var o=e.target.closest('.combo-opt'); if(!o) return;
+      inp.value=o.dataset.v||o.textContent;
+      close(); inp.focus();
+    });
+    document.addEventListener('click', function(e){ if(!wrap.contains(e.target)) close(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
   }
   function renderAll() {
     renderHeaderDate();
@@ -188,6 +221,7 @@
     renderReports();
     renderLastBackupInfo();
     renderBuildDatalist();
+    // combo stays hidden until user taps icon — no extra call
   }
 
   function renderHeaderDate() {
@@ -346,10 +380,11 @@
     }
     var sorted = state.stocks.slice().sort(function (a, b) { return b.qty - a.qty; });
     grid.innerHTML = sorted.map(function (st) {
-      var low = st.qty <= (state.settings.lowStock || 3);
-      return '<div class="stock-card' + (low ? ' low' : '') + '" data-stock="' + st.name + '" role="button" title="ویرایش قیمت/موجودی">' +
+      var empty = (st.qty || 0) === 0;
+      var low = !empty && st.qty <= (state.settings.lowStock || 3);
+      return '<div class="stock-card' + (empty ? ' empty' : (low ? ' low' : '')) + '" data-stock="' + st.name + '" role="button" title="ویرایش قیمت/موجودی">' +
         '<div class="sc-top"><span class="sc-name">' + st.name + '</span>' +
-        (low ? '<span class="sc-warn">کم</span>' : '<span class="sc-ok">موجود</span>') + '</div>' +
+        (empty ? '<span class="sc-warn empty-badge">ناموجود</span>' : (low ? '<span class="sc-warn">کم</span>' : '<span class="sc-ok">موجود</span>')) + '</div>' +
         '<div class="sc-qty">' + fnum(st.qty) + '</div>' +
         '<div class="sc-sub">عدد در انبار</div>' +
         (st.price ? '<div class="sc-price">' + fmtMoney(st.price) + '</div>' : '') +
