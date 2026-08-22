@@ -1067,6 +1067,23 @@
       inp.value = v;
     });
 
+    // Live total preview on sell form
+    function updateSellTotal(){
+      var tp = document.getElementById('sellTotal');
+      if(!tp) return;
+      var qty = parseInt($('sQty').value, 10) || 0;
+      var price = parseNum($('sPrice').value);
+      var val = document.querySelector('.tp-val');
+      if (val) val.textContent = fmtMoney(qty * price);
+    }
+    ['sQty','sPrice'].forEach(function(id){
+      var el = $(id);
+      if (el) el.addEventListener('input', updateSellTotal);
+    });
+    // also refresh when stock selected (price autofill)
+    var _origSelect = selectStock;
+    selectStock = function(name){ _origSelect(name); setTimeout(updateSellTotal, 30); };
+
     $('btnBackup').addEventListener('click', doBackup);
     $('btnRestore').addEventListener('click', function () { $('restoreFile').click(); });
     $('restoreFile').addEventListener('change', function (e) {

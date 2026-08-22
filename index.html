@@ -94,8 +94,11 @@
               <button type="button" class="stp-btn" data-dir="1" aria-label="زیاد کردن">+</button>
             </div>
           </label>
-          <label class="f-half">قیمت فروش هر عدد
-            <div class="price-wrap"><input type="text" id="bPrice" class="input ltr price-input" inputmode="numeric" placeholder="450000"><span class="price-unit">تومان</span></div>
+          <label class="f-full">قیمت فروش هر عدد
+            <div class="money-field">
+              <span class="mf-cur">تومان</span>
+              <input type="text" id="bPrice" class="mf-input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰">
+            </div>
           </label>
           <label class="f-full">تاریخ ساخت (شمسی)
             <div class="date-row">
@@ -139,20 +142,27 @@
 
       <div class="cpanel" id="sellFormPanel">
         <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg></span>اطلاعات فروش</h3></div>
-        <div class="form-grid">
+        <div class="form-grid sell-grid">
           <label class="f-full">مجسمه
             <select id="sName" class="input"></select>
           </label>
-          <label class="f-half">تعداد
-            <div class="stepper" data-target="sQty">
-              <button type="button" class="stp-btn" data-dir="-1" aria-label="کم کردن">−</button>
-              <input type="number" id="sQty" class="stp-input" min="1" value="1" inputmode="numeric" readonly>
-              <button type="button" class="stp-btn" data-dir="1" aria-label="زیاد کردن">+</button>
+          <div class="sell-row">
+            <div class="sell-box qty-box">
+              <span class="sb-lbl">تعداد</span>
+              <div class="stepper" data-target="sQty">
+                <button type="button" class="stp-btn" data-dir="-1" aria-label="کم کردن">−</button>
+                <input type="number" id="sQty" class="stp-input" min="1" value="1" inputmode="numeric" readonly>
+                <button type="button" class="stp-btn" data-dir="1" aria-label="زیاد کردن">+</button>
+              </div>
             </div>
-          </label>
-          <label class="f-half">قیمت هر عدد
-            <div class="price-wrap"><input type="text" id="sPrice" class="input ltr price-input" inputmode="numeric" placeholder="450000"><span class="price-unit">تومان</span></div>
-          </label>
+            <div class="sell-box price-box">
+              <span class="sb-lbl">قیمت هر عدد</span>
+              <div class="money-field">
+                <span class="mf-cur">تومان</span>
+                <input type="text" id="sPrice" class="mf-input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰">
+              </div>
+            </div>
+          </div>
           <label class="f-full">نحوه فروش
             <select id="sChannel" class="input">
               <option>حضوری (غرفه)</option>
@@ -169,6 +179,7 @@
             </div>
           </label>
         </div>
+        <div class="total-preview" id="sellTotal"><span class="tp-lbl">جمع فروش</span><b class="tp-val">۰ تومان</b></div>
         <button class="btn primary" id="btnSellAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> ثبت فروش</button>
       </div>
 
