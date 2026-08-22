@@ -51,12 +51,24 @@
   }
 
   function normalizeDates() {
-    state.builds.forEach(function (b) { if (!b.dateKey) b.dateKey = JKeyOf(b.jy, b.jm, b.jd); });
-    state.sales.forEach(function (s) { if (!s.dateKey) s.dateKey = JKeyOf(s.jy, s.jm, s.jd); });
+    function norm(x){
+      x.jy=+x.jy||0; x.jm=+x.jm||0; x.jd=+x.jd||0;
+      x.hh=x.hh||''; x.ts=x.ts||0;
+      if (!x.dateKey) x.dateKey = JKeyOf(x.jy, x.jm, x.jd);
+      else x.dateKey=+x.dateKey||JKeyOf(x.jy, x.jm, x.jd);
+    }
+    state.builds.forEach(norm);
+    state.sales.forEach(norm);
+    // self-heal: اگر رشته‌ای بود، تو DB هم عددی ذخیره کن (یک‌بار)
+    try{
+      state.sales.forEach(function(s){ if(typeof s.jy==='string'||typeof s.jm==='string'||typeof s.jd==='string'){ DB.put('sales', s); }});
+      state.builds.forEach(function(b){ if(typeof b.jy==='string'||typeof b.jm==='string'||typeof b.jd==='string'){ DB.put('builds', b); }});
+    }catch(e){}
   }
 
-  function JKeyOf(jy, jm, jd) { return jy * 10000 + jm * 100 + jd; }
-  function monthOf(x) { return (x.jy || 0) * 100 + (x.jm || 0); }
+  function JKeyOf(jy, jm, jd) { jy=+jy||0; jm=+jm||0; jd=+jd||0; return jy * 10000 + jm * 100 + jd; }
+  function monthOf(x) { var jy=+x.jy||0, jm=+x.jm||0; return jy * 100 + jm; }
+  function _sameMonth(x, jy, jm){ return (+x.jy===+jy && +x.jm===+jm); }
   function nowHH(){ var d=new Date(); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
   function fmtFullDate(x){
     try{
@@ -924,12 +936,12 @@
     var weekBuilds = [0, 0, 0, 0, 0];
     state.sales.forEach(function (s) {
       if (monthOf(s) !== mk) return;
-      var w = Math.min(Math.floor((s.jd - 1) / 7), 4);
+      var w = Math.min(Math.floor(((+s.jd) - 1) / 7), 4);
       weekSales[w] += s.qty;
     });
     state.builds.forEach(function (b) {
       if (monthOf(b) !== mk) return;
-      var w = Math.min(Math.floor((b.jd - 1) / 7), 4);
+      var w = Math.min(Math.floor(((+b.jd) - 1) / 7), 4);
       weekBuilds[w] += b.qty;
     });
 
@@ -973,7 +985,7 @@
     var mk = jy * 100 + jm;
     var dayStart = w * 7 + 1;
     var dayEnd = Math.min(dayStart + 6, monthDays(jm, jy));
-    var inWeek = function (x) { return monthOf(x) === mk && x.jd >= dayStart && x.jd <= dayEnd; };
+    var inWeek = function (x) { return monthOf(x) === mk && (+x.jd) >= dayStart && (+x.jd) <= dayEnd; };
 
     var weekSales = state.sales.filter(inWeek);
     var weekBuilds = state.builds.filter(inWeek);
