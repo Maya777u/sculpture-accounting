@@ -192,14 +192,15 @@
     if(!wrap||!inp||!btn||!box) return;
     function open(){ renderBuildDatalist(); box.hidden=false; wrap.classList.add('open'); }
     function close(){ box.hidden=true; wrap.classList.remove('open'); }
+    wrap.classList.add('has-btn');
     btn.addEventListener('click', function(e){ e.stopPropagation(); if(box.hidden) open(); else close(); });
-    inp.addEventListener('focus', function(){ if(getBuildNames().length) open(); });
+    // تایپ آزاد — فیلتر زنده فقط وقتی منو باز است
     inp.addEventListener('input', function(){
+      if(box.hidden) return;
       var q=inp.value.trim().toLowerCase();
       var names=getBuildNames().filter(function(n){ return !q || n.toLowerCase().indexOf(q)!==-1; });
-      if(!names.length){ box.innerHTML='<div class="combo-empty">موردی یافت نشد — همین نام جدید ثبت می‌شود</div>'; box.hidden=false; return; }
+      if(!names.length){ box.innerHTML='<div class="combo-empty">موردی یافت نشد — همین نام جدید ثبت می‌شود</div>'; return; }
       box.innerHTML=names.map(function(n){ return '<button type="button" class="combo-opt" data-v="'+n.replace(/"/g,'&quot;')+'">'+n+'</button>'; }).join('');
-      box.hidden=false; wrap.classList.add('open');
     });
     box.addEventListener('click', function(e){
       var o=e.target.closest('.combo-opt'); if(!o) return;
