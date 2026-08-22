@@ -12,17 +12,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style-ultra.css" id="themeCSS">
+  <link rel="stylesheet" href="css/style-forge.css" id="themeCSS">
   <script>
-    /* تم‌سیچر: ذخیره انتخاب در localStorage */
-    (function() {
-      var saved = localStorage.getItem('sact_theme');
-      if (saved === 'classic') {
-        document.getElementById('themeCSS').href = 'css/style.css';
-      } else if (saved === 'forge') {
-        document.getElementById('themeCSS').href = 'css/style-forge.css';
-      }
-    })();
+    /* تم پیش‌فرض: Forge (تنها تم) */
   </script>
 </head>
 <body>
@@ -333,8 +325,7 @@
       </div>
       <p class="set-desc">🎨 تم برنامه:</p>
       <div class="theme-row" id="settingsThemes">
-        <button class="theme-opt active" data-theme="ultra">⚡ Ultra</button>
-        <button class="theme-opt" data-theme="forge">🔥 Forge</button>
+        <button class="theme-opt active" data-theme="forge">🔥 Forge</button>
       </div>
       <div class="hr"></div>
       <p class="set-desc">💾 پشتیبان‌گیری و بازیابی — فایل JSON کامل:</p>
@@ -361,27 +352,13 @@
     }
   </script>
   <script>
-    /* تم‌سیچر در تنظیمات — فقط Ultra + Forge */
+    /* تم‌سیچر: هر انتخابی → Forge (تنها تم باقی‌مانده) */
     (function() {
       var css = document.getElementById('themeCSS');
-      var btns = document.querySelectorAll('.theme-opt');
-      var themes = { ultra: 'css/style-ultra.css', forge: 'css/style-forge.css' };
+      css.href = 'css/style-forge.css';
       var pc = document.getElementById('forge-particles');
-      btns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var theme = btn.dataset.theme;
-          btns.forEach(function(b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          css.href = themes[theme];
-          localStorage.setItem('sact_theme', theme);
-          if (pc) pc.style.display = (theme === 'forge') ? 'block' : 'none';
-        });
-      });
-      var saved = localStorage.getItem('sact_theme');
-      if (saved && themes[saved]) {
-        css.href = themes[saved];
-        btns.forEach(function(b) { b.classList.remove('active'); if (b.dataset.theme === saved) b.classList.add('active'); });
-      }
+      if (pc) pc.style.display = 'block';
+      localStorage.setItem('sact_theme', 'forge');
     })();
   </script>
 </body>
