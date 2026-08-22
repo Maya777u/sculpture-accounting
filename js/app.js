@@ -295,6 +295,8 @@
     sel.value = name;
     var st = state.stocks.filter(function (s) { return s.name === name; })[0];
     if (st) $('sPrice').value = st.price ? Number(st.price).toLocaleString('en-US') : '';
+    var sp = $('sPrice');
+    if (sp) sp.dispatchEvent(new Event('input', { bubbles: true }));
     $('sellFormPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -313,6 +315,8 @@
       var st = state.stocks.filter(function (s) { return s.name === cur; })[0];
       if (st && st.price) $('sPrice').value = Number(st.price).toLocaleString('en-US');
     }
+    var sp2 = $('sPrice');
+    if (sp2) sp2.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
   function bindSell() {
@@ -1049,6 +1053,7 @@
           var v = parseInt(input.value,10) || 1;
           v = Math.max(1, v + dir);
           input.value = v;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
         });
       });
     });
@@ -1065,6 +1070,7 @@
       var v = parseInt(inp.value,10) || 1;
       v = Math.max(1, v + dir);
       inp.value = v;
+      inp.dispatchEvent(new Event('input', { bubbles: true }));
     });
 
     // Live total preview on sell form
