@@ -293,14 +293,17 @@
   function selectStock(name) {
     var sel = $('sName');
     sel.value = name;
+    sPriceDirty = false; // انتخاب مجسمه = قیمت پیش‌فرض انبار دوباره
     var st = state.stocks.filter(function (s) { return s.name === name; })[0];
-    if (st) $('sPrice').value = st.price ? Number(st.price).toLocaleString('en-US') : '';
+    $('sPrice').value = (st && st.price) ? Number(st.price).toLocaleString('en-US') : '';
     var sp = $('sPrice');
     if (sp) sp.dispatchEvent(new Event('input', { bubbles: true }));
     $('sellFormPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   /* ================= SELL ================= */
+  var sPriceDirty = false; // کاربر قیمت را دستی عوض کرده؟
+
   function renderSellForm() {
     var sel = $('sName');
     sel.innerHTML = '';
@@ -310,14 +313,18 @@
       o.textContent = st.name + ' (' + fnum(st.qty) + ' عدد)';
       sel.appendChild(o);
     });
-    var cur = sel.value;
-    if (cur) {
-      var st = state.stocks.filter(function (s) { return s.name === cur; })[0];
-      if (st && st.price) $('sPrice').value = Number(st.price).toLocaleString('en-US');
+    // فقط اگر کاربر قیمت دستی نزده، از انبار پر کن
+    if (!sPriceDirty) {
+      var cur = sel.value;
+      if (cur) {
+        var st = state.stocks.filter(function (s) { return s.name === cur; })[0];
+        $('sPrice').value = (st && st.price) ? Number(st.price).toLocaleString('en-US') : '';
+      }
+      var sp2 = $('sPrice');
+      if (sp2) sp2.dispatchEvent(new Event('input', { bubbles: true }));
     }
-    var sp2 = $('sPrice');
-    if (sp2) sp2.dispatchEvent(new Event('input', { bubbles: true }));
   }
+  function resetSellFormState() { sPriceDirty = false; }
 
   function bindSell() {
     $('btnSellAdd').addEventListener('click', function () {
@@ -344,7 +351,9 @@
       DB.put('stocks', st);
       DB.add('sales', sale).then(function () {
         state.sales.push(sale);
-        $('sQty').value = '1'; $('sDate').value = J.jToStrEn(J.today());
+        $('sQty').value = '1'; $('sDate').value = J.jToStrEn(J.today()); sPriceDirty = false;
+        var st2 = state.stocks.filter(function (s) { return s.name === name; })[0];
+        $('sPrice').value = (st2 && st2.price) ? Number(st2.price).toLocaleString('en-US') : '';
         renderAll();
         toast('✅ فروش ثبت شد: ' + name + ' ×' + fnum(qty));
       });
@@ -1044,6 +1053,11 @@
     bindMoneyInput($('bPrice'));
     bindMoneyInput($('sPrice'));
     bindMoneyInput($('ePrice'));
+    // کاربر داره قیمت رو دستی تغییر میده → دیگه رندرها نباید بازنویسیش کنن
+    if ($('sPrice')) $('sPrice').addEventListener('input', function () { sPriceDirty = true; });
+    if ($('btnSellAdd')) $('btnSellAdd').addEventListener('click', function () {
+      setTimeout(function () { sPriceDirty = false; }, 50);
+    });
     // Stepper -/+ (build + sell)
     document.querySelectorAll('.stepper').forEach(function(wrap){
       var input = wrap.querySelector('.stp-input');
