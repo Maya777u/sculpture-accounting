@@ -66,23 +66,28 @@
   function fmtMoney(x) { return fnum(x) + ' تومان'; }
 
   /* قالب‌بندی زنده اعداد با جداکننده هزارگان — ورودی قیمت */
+  function faToEn(str) {
+    return String(str || '')
+      .replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); })
+      .replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); });
+  }
   function bindMoneyInput(input) {
     if (!input) return;
     input.addEventListener('input', function () {
-      var digits = input.value.replace(/[^\d]/g, '');
+      var digits = faToEn(input.value).replace(/[^\d]/g, '');
       if (!digits) { input.value = ''; return; }
       var num = parseInt(digits, 10);
       if (isNaN(num)) return;
       input.value = num.toLocaleString('en-US');
     });
     input.addEventListener('blur', function () {
-      input.value = input.value.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      input.value = faToEn(input.value).replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     });
   }
 
   /* تبدیل اعداد با جداکننده به عدد — برای ذخیره */
   function parseNum(str) {
-    return parseInt(String(str || '').replace(/[^\d]/g, ''), 10) || 0;
+    return parseInt(faToEn(String(str || '')).replace(/[^\d]/g, ''), 10) || 0;
   }
 
   /* ---------- Render All ---------- */
@@ -286,7 +291,7 @@
     var sel = $('sName');
     sel.value = name;
     var st = state.stocks.filter(function (s) { return s.name === name; })[0];
-    if (st) $('sPrice').value = st.price || '';
+    if (st) $('sPrice').value = st.price ? Number(st.price).toLocaleString('en-US') : '';
     $('sellFormPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -303,7 +308,7 @@
     var cur = sel.value;
     if (cur) {
       var st = state.stocks.filter(function (s) { return s.name === cur; })[0];
-      if (st && st.price) $('sPrice').value = st.price;
+      if (st && st.price) $('sPrice').value = Number(st.price).toLocaleString('en-US');
     }
   }
 
@@ -339,7 +344,7 @@
     });
     $('sName').addEventListener('change', function () {
       var st = state.stocks.filter(function (s) { return s.name === $('sName').value; })[0];
-      if (st) $('sPrice').value = st.price || '';
+      if (st) $('sPrice').value = st.price ? Number(st.price).toLocaleString('en-US') : '';
     });
   }
 
