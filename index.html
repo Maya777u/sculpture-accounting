@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&family=Lalezar&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style-atlas.css" id="themeCSS">
 
 </head>
@@ -31,9 +31,9 @@
 
   <header class="hdr">
     <div class="brand">
-      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M21 12l-9 5-9-5"/><path d="M21 16l-9 5-9-5"/></svg></span>
+      <span class="brand-mark brand-mark-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/><circle cx="12" cy="7" r="1.4" fill="currentColor" stroke="none"/></svg></span>
       <div>
-        <h1>مجسمه‌حساب</h1>
+        <h1 class="brand-title">مجسمه‌حساب</h1>
         <span>سالن فروش و سود</span>
       </div>
     </div>
@@ -85,7 +85,8 @@
       <div class="cpanel form-panel">
         <div class="form-grid">
           <label class="f-full">نام مجسمه <span class="req">*</span>
-            <input type="text" id="bName" class="input" placeholder="مثلا: هواپیمای استیم‌پانک">
+            <input type="text" id="bName" class="input" list="bNameList" placeholder="مثلا: هواپیمای استیم‌پانک" autocomplete="off">
+            <datalist id="bNameList"></datalist>
           </label>
           <label class="f-half">تعداد <span class="req">*</span>
             <div class="stepper" data-target="bQty">
@@ -169,7 +170,7 @@
               <option>سفارش تلفنی</option>
               <option>اینستاگرام</option>
               <option>باغ‌فردوس</option>
-              <option>سایر</option>
+              <option>شاهین</option>
             </select>
           </label>
           <label class="f-full">تاریخ فروش (شمسی)
@@ -227,6 +228,11 @@
         </div>
       </div>
 
+      <div class="cpanel featured">
+        <div class="cpanel-head"><h3><span class="hd-ico accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>ساعات پرفروش</h3><span class="sub">چه ساعتی بیشتر می‌فروشی؟</span></div>
+        <div id="chHourly"></div>
+        <div class="hour-legend" id="hourlyInsight"></div>
+      </div>
       <div class="cpanel">
         <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h10v5a5 5 0 0 1-10 0V3z"/><path d="M7 8H4a3 3 0 0 0 3 3"/><path d="M17 8h3a3 3 0 0 1-3 3"/><path d="M12 14v4"/><path d="M8 21h8"/></svg></span>پرفروش‌ترین‌ها (پارتو ۸۰/۲۰)</h3><span class="sub">این ماه</span></div>
         <div id="chPareto"></div>

@@ -22,7 +22,7 @@
     calYear: 0, calMonth: 0
   };
 
-  var CHANNELS = ['حضوری (غرفه)', 'سفارش تلفنی', 'اینستاگرام', 'باغ‌فردوس', 'سایر'];
+  var CHANNELS = ['حضوری (غرفه)', 'سفارش تلفنی', 'اینستاگرام', 'باغ‌فردوس', 'شاهین'];
 
   /* ---------- Init ---------- */
   function init() {
@@ -57,6 +57,26 @@
 
   function JKeyOf(jy, jm, jd) { return jy * 10000 + jm * 100 + jd; }
   function monthOf(x) { return (x.jy || 0) * 100 + (x.jm || 0); }
+  function nowHH(){ var d=new Date(); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+  function fmtFullDate(x){
+    try{
+      var j={jy:x.jy,jm:x.jm,jd:x.jd};
+      var dstr=J.jToStr(j);
+      var w=J.weekdayName?J.weekdayName(j.jy,j.jm,j.jd):'';
+      var hh=x.hh||'';
+      var ch=x.channel?' · '+(x.channel):'';
+      if(hh) return dstr+' — '+w+' — '+J.faNum(hh)+ch;
+      return dstr+' — '+w+ch;
+    }catch(e){ return J.jToStr({jy:x.jy,jm:x.jm,jd:x.jd}); }
+  }
+  function fmtSmallDate(x){
+    try{
+      var j={jy:x.jy,jm:x.jm,jd:x.jd};
+      var w=J.weekdayName?J.weekdayName(j.jy,j.jm,j.jd):'';
+      var hh=x.hh||'';
+      return J.jToStr(j)+(w?' '+w:'')+(hh?' '+J.faNum(hh):'');
+    }catch(e){ return J.jToStr({jy:x.jy,jm:x.jm,jd:x.jd}); }
+  }
 
   /* ---------- Format ---------- */
   function fnum(x) {
@@ -71,7 +91,7 @@
     if (n === 0) return 'صفر';
     var yakan = ['','یک','دو','سه','چهار','پنج','شش','هفت','هشت','نه'];
     var dah = ['','','بیست','سی','چهل','پنجاه','شصت','هفتاد','هشتاد','نود'];
-    var dahyek = ['','یازده','دوازده','سیزده','چهارده','پانزده','شانزده','هفده','هجده','نوزده'];
+    var dahyek = ['ده','یازده','دوازده','سیزده','چهارده','پانزده','شانزده','هفده','هجده','نوزده'];
     var sadha = ['','صد','دویست','سیصد','چهارصد','پانصد','ششصد','هفتصد','هشتصد','نهصد'];
     var scale = ['','هزار','میلیون','میلیارد'];
     function three(x) {
@@ -121,7 +141,29 @@
     return parseInt(faToEn(String(str || '')).replace(/[^\d]/g, ''), 10) || 0;
   }
 
+  /* جمع زنده فروش — عدد + به حروف (گلوبال برای همه‌جا) */
+  function updateSellTotal(){
+    var tp = document.getElementById('sellTotal');
+    if(!tp) return;
+    var qty = parseInt(($('sQty') && $('sQty').value) || '0', 10) || 0;
+    var price = parseNum($('sPrice') ? $('sPrice').value : '');
+    var val = document.querySelector('.tp-val');
+    var w = document.getElementById('sellTotalWords');
+    var sum = qty * price;
+    if (val) val.textContent = fmtMoney(sum);
+    if (w) w.textContent = sum > 0 ? (numToWords(sum) + ' تومان') : '—';
+  }
+
   /* ---------- Render All ---------- */
+  function renderBuildDatalist(){
+    var dl=document.getElementById('bNameList');
+    if(!dl) return;
+    var names={};
+    state.builds.forEach(function(b){ names[b.name]=1; });
+    state.stocks.forEach(function(s){ names[s.name]=1; });
+    var arr=Object.keys(names).sort();
+    dl.innerHTML=arr.map(function(n){ return '<option value="'+n+'">'; }).join('');
+  }
   function renderAll() {
     renderHeaderDate();
     renderDashboard();
@@ -133,6 +175,7 @@
     renderRecentSales();
     renderReports();
     renderLastBackupInfo();
+    renderBuildDatalist();
   }
 
   function renderHeaderDate() {
@@ -210,7 +253,8 @@
         id: newId(),
         name: name, qty: qty, price: price,
         jy: j.jy, jm: j.jm, jd: j.jd,
-        dateKey: JKeyOf(j.jy, j.jm, j.jd)
+        dateKey: JKeyOf(j.jy, j.jm, j.jd),
+        hh: nowHH(), ts: Date.now()
       };
 
       var st = state.stocks.filter(function (s) { return s.name === name; })[0];
@@ -240,9 +284,8 @@
     }
     var sorted = state.builds.slice().sort(function (a, b) { return String(b.id) > String(a.id) ? 1 : -1; }).slice(0, 20);
     box.innerHTML = sorted.map(function (b) {
-      var j = { jy: b.jy, jm: b.jm, jd: b.jd };
       return '<div class="trow clickable" data-type="build" data-id="' + b.id + '">' +
-        '<div class="n"><b>' + b.name + '</b><small>' + J.jToStr(j) + '</small></div>' +
+        '<div class="n"><b>' + b.name + '</b><small>' + fmtSmallDate(b) + '</small></div>' +
         '<span class="v"><span class="v green">+' + fnum(b.qty) + '</span> <svg class="edit-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span></div>';
     }).join('');
     box.querySelectorAll('.trow.clickable').forEach(function (row) {
@@ -321,12 +364,13 @@
 
   function renderStockChips() {
     var box = $('stockChips');
-    if (!state.stocks.length) {
-      box.innerHTML = '<div class="empty small">انبار خالی است</div>';
+    var avail = state.stocks.filter(function (st) { return (st.qty || 0) > 0; });
+    if (!avail.length) {
+      box.innerHTML = '<div class="empty small">موجودی تمام شده — اول ساخت ثبت کن</div>';
       return;
     }
     box.innerHTML = '';
-    state.stocks.forEach(function (st) {
+    avail.forEach(function (st) {
       var chip = document.createElement('button');
       chip.className = 'chip';
       chip.innerHTML = '<span>' + st.name + '</span><span class="c-qty">' + fnum(st.qty) + '</span>';
@@ -352,7 +396,19 @@
   function renderSellForm() {
     var sel = $('sName');
     sel.innerHTML = '';
-    state.stocks.forEach(function (st) {
+    var avail = state.stocks.filter(function (st) { return (st.qty || 0) > 0; });
+    // موجودی صفر → در لیست فروش نباشد (اما اگر هیچی نمانده، همه را نشان بده با غیرفعال)
+    var list = avail.length ? avail : state.stocks.slice();
+    if (!state.stocks.length) {
+      sel.innerHTML = '<option value="" disabled selected>انبار خالی — اول ساخت ثبت کن</option>';
+      return;
+    }
+    if (!avail.length) {
+      sel.innerHTML = '<option value="" disabled selected>موجودی تمام شده — اول ساخت ثبت کن</option>';
+      sel.disabled = true; return;
+    }
+    sel.disabled = false;
+    list.forEach(function (st) {
       var o = document.createElement('option');
       o.value = st.name;
       o.textContent = st.name + ' (' + fnum(st.qty) + ' عدد)';
@@ -368,6 +424,7 @@
       var sp2 = $('sPrice');
       if (sp2) sp2.dispatchEvent(new Event('input', { bubbles: true }));
     }
+    if (typeof updateSellTotal === 'function') setTimeout(updateSellTotal, 0);
   }
   function resetSellFormState() { sPriceDirty = false; }
 
@@ -390,7 +447,8 @@
         id: newId(),
         name: name, qty: qty, price: price, channel: channel,
         jy: j.jy, jm: j.jm, jd: j.jd,
-        dateKey: JKeyOf(j.jy, j.jm, j.jd)
+        dateKey: JKeyOf(j.jy, j.jm, j.jd),
+        hh: nowHH(), ts: Date.now()
       };
       st.qty -= qty;
       DB.put('stocks', st);
@@ -417,9 +475,8 @@
     }
     var sorted = state.sales.slice().sort(function (a, b) { return String(b.id) > String(a.id) ? 1 : -1; }).slice(0, 15);
     box.innerHTML = sorted.map(function (s) {
-      var j = { jy: s.jy, jm: s.jm, jd: s.jd };
       return '<div class="trow clickable" data-type="sale" data-id="' + s.id + '">' +
-        '<div class="n"><b>' + s.name + '</b><small>' + J.jToStr(j) + ' · ' + (s.channel || '') + '</small></div>' +
+        '<div class="n"><b>' + s.name + '</b><small>' + fmtSmallDate(s) + ' · ' + (s.channel || '') + '</small></div>' +
         '<span class="v gold">' + fmtMoney(s.qty * s.price) + ' <svg class="edit-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span></div>';
     }).join('');
     box.querySelectorAll('.trow.clickable').forEach(function (row) {
@@ -701,10 +758,44 @@
   /* ================= REPORTS ================= */
   var segViewMode = true;
 
+    function renderHourlyChart(){
+    var box=document.getElementById('chHourly');
+    if(!box) return;
+    var counts=new Array(24).fill(0);
+    var hasHour=false;
+    state.sales.forEach(function(s){
+      var h=null;
+      if(s.hh){ var p=String(s.hh).split(':')[0]; h=parseInt(p,10); if(!isNaN(h)&&h>=0&&h<24){ counts[h]++; hasHour=true; } }
+      else if(s.ts){ try{ h=new Date(s.ts).getHours(); counts[h]++; hasHour=true; }catch(e){} }
+    });
+    var total=counts.reduce(function(a,b){return a+b;},0);
+    if(!total){
+      box.innerHTML='<div class="empty small">هنوز ساعتی ثبت نشده — بعد از چند فروش، الگوی ساعات می‌آید</div>';
+      var leg=document.getElementById('hourlyInsight'); if(leg) leg.textContent='';
+      return;
+    }
+    var max=Math.max.apply(null,counts.concat([1]));
+    var best=counts.indexOf(max);
+    // show 6..23 + 0..5 as 24 cols but wrap to 6 columns grid - we keep 24 cells in hour-grid
+    var cells='';
+    for(var h=0;h<24;h++){
+      var c=counts[h];
+      var pct=Math.round(c/max*100);
+      var hot=(c===max && c>0)?' hot':'';
+      cells+='<div class="hour-cell'+hot+'"><b>'+J.faNum(h)+'</b><small>'+(c?fnum(c):'—')+'</small><div class="hour-bar"><i style="width:'+pct+'%"></i></div></div>';
+    }
+    box.innerHTML='<div class="hour-grid">'+cells+'</div>';
+    var leg2=document.getElementById('hourlyInsight');
+    if(leg2){
+      var names=['نیمه‌شب','صبح','ظهر','عصر','شب'];
+      leg2.innerHTML='⏰ <b>ساعت شلوغ: '+J.faNum(best)+':۰۰</b> — '+fnum(counts[best])+' فروش ('+fnum(Math.round(counts[best]/total*100))+'٪)'+(!hasHour || counts.filter(function(x){return x>0;}).length<2?' <span style="opacity:.6">— هرچه بیشتر بفروشی دقیق‌تر می‌شود</span>':'');
+    }
+  }
   function renderReports() {
     renderMonthlyBars();
     renderWeeklyChart();
     renderWeekdayChart();
+    renderHourlyChart();
     renderDonut();
     renderPareto();
   }
@@ -794,21 +885,28 @@
         }).join('')
       : '<div class="empty small">فروشی نبود</div>';
 
-    // لیست فروش‌های ماه
-    $('mdSales').innerHTML = sales.length
-      ? sales.slice().sort(function (a, b) { return a.jd - b.jd; }).map(function (s) {
-        var j = { jy: s.jy, jm: s.jm, jd: s.jd };
-        return '<div class="trow"><div class="n"><b>' + s.name + '</b><small>' + J.jToStr(j) + ' · ' + (s.channel || '') + '</small></div><span class="v gold">' + fmtMoney(s.qty * s.price) + '</span></div>';
-      }).join('')
-      : '<div class="empty small">فروشی در این ماه ثبت نشده</div>';
 
-    // لیست ساخت‌های ماه
-    $('mdBuilds').innerHTML = builds.length
-      ? builds.slice().sort(function (a, b) { return a.jd - b.jd; }).map(function (b) {
-        var j = { jy: b.jy, jm: b.jm, jd: b.jd };
-        return '<div class="trow"><div class="n"><b>' + b.name + '</b><small>' + J.jToStr(j) + '</small></div><span class="v green">+' + fnum(b.qty) + '</span></div>';
-      }).join('')
-      : '<div class="empty small">ساختی در این ماه ثبت نشده</div>';
+    // لیست فروش‌های ماه — ۳ ستون: اسم / تعداد / مبلغ + تاریخ ریز با روز و ساعت
+    if (sales.length) {
+      sales = sales.slice().sort(function(a,b){ var d=(a.jd-b.jd); if(d) return d; return (a.ts||0)-(b.ts||0); });
+      var rows=sales.map(function(s){
+        return '<tr><td><b>'+s.name+'</b><br><small>'+fmtSmallDate(s)+' · '+(s.channel||'')+'</small></td><td class="num" style="color:var(--text)">'+fnum(s.qty)+' عدد</td><td class="num" style="color:var(--accent)">'+fmtMoney(s.qty*s.price)+'</td></tr>';
+      }).join('');
+      $('mdSales').innerHTML='<table class="wk-table"><thead><tr><th>مجسمه</th><th style="text-align:left">تعداد</th><th style="text-align:left">مبلغ</th></tr></thead><tbody>'+rows+'</tbody></table>';
+    } else {
+      $('mdSales').innerHTML = '<div class="empty small">فروشی در این ماه ثبت نشده</div>';
+    }
+
+    // لیست ساخت‌های ماه — با روز و ساعت
+    if (builds.length) {
+      builds = builds.slice().sort(function(a,b){ var d=(a.jd-b.jd); if(d) return d; return (a.ts||0)-(b.ts||0); });
+      var brows=builds.map(function(b){
+        return '<tr><td><b>'+b.name+'</b><br><small>'+fmtSmallDate(b)+'</small></td><td class="num" style="color:var(--green)">+'+fnum(b.qty)+'</td><td class="num">'+ (b.price ? fmtMoney(b.price) : '—') +'</td></tr>';
+      }).join('');
+      $('mdBuilds').innerHTML='<table class="wk-table"><thead><tr><th>مجسمه</th><th style="text-align:left">تعداد</th><th style="text-align:left">قیمت واحد</th></tr></thead><tbody>'+brows+'</tbody></table>';
+    } else {
+      $('mdBuilds').innerHTML='<div class="empty small">ساختی در این ماه ثبت نشده</div>';
+    }
 
     $('monthModal').classList.add('open');
   }
@@ -895,19 +993,19 @@
       '</div>';
 
     if (weekSales.length) {
-      var rows = weekSales.slice().sort(function(a,b){return a.jd-b.jd;}).map(function(s){
-        var j={jy:s.jy,jm:s.jm,jd:s.jd};
-        return '<tr><td><b>'+s.name+'</b><br><small>'+J.jToStr(j)+' · '+(s.channel||'')+'</small></td><td class="num">'+fnum(s.qty)+' × '+fmtMoney(s.price)+'</td><td class="num" style="color:var(--accent)">'+fmtMoney(s.qty*s.price)+'</td></tr>';
+      weekSales = weekSales.slice().sort(function(a,b){ var d=(a.jd-b.jd); if(d) return d; return (a.ts||0)-(b.ts||0); });
+      var rows = weekSales.map(function(s){
+        return '<tr><td><b>'+s.name+'</b><br><small>'+fmtSmallDate(s)+' · '+(s.channel||'')+'</small></td><td class="num" style="color:var(--text)">'+fnum(s.qty)+' عدد</td><td class="num" style="color:var(--accent)">'+fmtMoney(s.qty*s.price)+'</td></tr>';
       }).join('');
-      $('wkSales').innerHTML = '<table class="wk-table"><thead><tr><th>مجسمه</th><th style="text-align:left">تعداد × قیمت</th><th style="text-align:left">مبلغ</th></tr></thead><tbody>'+rows+'</tbody></table>';
+      $('wkSales').innerHTML = '<table class="wk-table"><thead><tr><th>مجسمه</th><th style="text-align:left">تعداد</th><th style="text-align:left">مبلغ</th></tr></thead><tbody>'+rows+'</tbody></table>';
     } else {
       $('wkSales').innerHTML = '<div class="empty small">فروشی در این هفته ثبت نشده</div>';
     }
 
     if (weekBuilds.length) {
-      var brows = weekBuilds.slice().sort(function(a,b){return a.jd-b.jd;}).map(function(b){
-        var j={jy:b.jy,jm:b.jm,jd:b.jd};
-        return '<tr><td><b>'+b.name+'</b><br><small>'+J.jToStr(j)+'</small></td><td class="num" style="color:var(--green)">+'+fnum(b.qty)+'</td><td class="num">'+ (b.price ? fmtMoney(b.price) : '—') +'</td></tr>';
+      weekBuilds = weekBuilds.slice().sort(function(a,b){ var d=(a.jd-b.jd); if(d) return d; return (a.ts||0)-(b.ts||0); });
+      var brows = weekBuilds.map(function(b){
+        return '<tr><td><b>'+b.name+'</b><br><small>'+fmtSmallDate(b)+'</small></td><td class="num" style="color:var(--green)">+'+fnum(b.qty)+'</td><td class="num">'+ (b.price ? fmtMoney(b.price) : '—') +'</td></tr>';
       }).join('');
       $('wkBuilds').innerHTML = '<table class="wk-table"><thead><tr><th>مجسمه</th><th style="text-align:left">تعداد</th><th style="text-align:left">قیمت واحد</th></tr></thead><tbody>'+brows+'</tbody></table>';
     } else {
@@ -956,7 +1054,7 @@
     var agg = {};
     state.sales.forEach(function (s) {
       if (monthOf(s) !== m) return;
-      var ch = s.channel || 'سایر';
+      var ch = s.channel || 'شاهین';
       agg[ch] = (agg[ch] || 0) + s.qty * s.price;
     });
     var arr = Object.keys(agg).map(function (k) { return { name: k, val: agg[k] }; }).sort(function (a, b) { return b.val - a.val; });
@@ -1150,18 +1248,7 @@
       inp.dispatchEvent(new Event('input', { bubbles: true }));
     });
 
-    // Live total preview on sell form
-    function updateSellTotal(){
-      var tp = document.getElementById('sellTotal');
-      if(!tp) return;
-      var qty = parseInt($('sQty').value, 10) || 0;
-      var price = parseNum($('sPrice').value);
-      var val = document.querySelector('.tp-val');
-      var w = document.getElementById('sellTotalWords');
-      var sum = qty * price;
-      if (val) val.textContent = fmtMoney(sum);
-      if (w) w.textContent = sum > 0 ? (numToWords(sum) + ' تومان') : '—';
-    }
+    // listeners for live total — updateSellTotal is now global
     ['sQty','sPrice'].forEach(function(id){
       var el = $(id);
       if (el) el.addEventListener('input', updateSellTotal);
@@ -1169,6 +1256,14 @@
     // also refresh when stock selected (price autofill)
     var _origSelect = selectStock;
     selectStock = function(name){ _origSelect(name); setTimeout(updateSellTotal, 30); };
+    // stepper +/- also triggers total
+    document.addEventListener('click', function(e){
+      var b = e.target.closest('.stepper .stp-btn');
+      if(!b) return;
+      var wrap = b.closest('.stepper');
+      if(!wrap || !wrap.querySelector('#sQty')) return;
+      setTimeout(updateSellTotal, 10);
+    });
 
     $('btnBackup').addEventListener('click', doBackup);
     $('btnRestore').addEventListener('click', function () { $('restoreFile').click(); });
