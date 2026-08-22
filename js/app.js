@@ -264,7 +264,7 @@
     var sorted = state.stocks.slice().sort(function (a, b) { return b.qty - a.qty; });
     grid.innerHTML = sorted.map(function (st) {
       var low = st.qty <= (state.settings.lowStock || 3);
-      return '<div class="stock-card' + (low ? ' low' : '') + '">' +
+      return '<div class="stock-card' + (low ? ' low' : '') + '" data-stock="' + st.name + '" role="button" title="ویرایش قیمت/موجودی">' +
         '<div class="sc-top"><span class="sc-name">' + st.name + '</span>' +
         (low ? '<span class="sc-warn">کم</span>' : '<span class="sc-ok">موجود</span>') + '</div>' +
         '<div class="sc-qty">' + fnum(st.qty) + '</div>' +
@@ -272,6 +272,23 @@
         (st.price ? '<div class="sc-price">' + fmtMoney(st.price) + '</div>' : '') +
         '</div>';
     }).join('');
+    grid.querySelectorAll('.stock-card').forEach(function (card) {
+      card.addEventListener('click', function () { openStockEdit(card.dataset.stock); });
+    });
+  }
+
+  /* ویرایش مستقیم قیمت/موجودی از انبار */
+  function openStockEdit(name) {
+    var st = state.stocks.filter(function (s) { return s.name === name; })[0];
+    if (!st) return;
+    state.editTarget = { type: 'stock', name: st.name };
+    $('editModalTitle').textContent = 'ویرایش انبار — ' + st.name;
+    $('editFields').innerHTML =
+      makeField('نام مجسمه', 'eName', 'text', st.name) +
+      makeField('تعداد موجودی', 'eQty', 'number', st.qty, 0) +
+      makeField('قیمت هر عدد (تومان)', 'ePrice', 'number', st.price);
+    bindMoneyInput($('ePrice'));
+    $('editModal').classList.add('open');
   }
 
   function renderStockChips() {
@@ -439,6 +456,23 @@
       if (!t) return;
       var name = $('eName').value.trim();
       var qty = parseInt($('eQty').value, 10);
+      var price = parseNum($('ePrice').value);
+
+      /* --- ذخیره ویرایش انبار (قیمت/موجودی) --- */
+      if (t.type === 'stock') {
+        if (!name) { toast('نام را وارد کن', 'err'); return; }
+        if (isNaN(qty) || qty < 0) { toast('تعداد نامعتبر', 'err'); return; }
+        var stX = state.stocks.filter(function (s) { return s.name === t.name; })[0];
+        if (!stX) { toast('مجسمه پیدا نشد', 'err'); return; }
+        stX.name = name; stX.qty = qty; stX.price = price;
+        DB.put('stocks', stX).then(function () {
+          renderAll();
+          $('editModal').classList.remove('open');
+          toast('✅ انبار بروز شد: ' + name);
+          state.editTarget = null;
+        });
+        return;
+      }
       var dateStr = $('eDate').value.trim();
       if (!name || !qty || qty < 1) { toast('مقادیر نامعتبر', 'err'); return; }
       var j = dateStr ? J.parse(dateStr) : J.today();
@@ -482,6 +516,7 @@
     $('editDelete').addEventListener('click', function () {
       var t = state.editTarget;
       if (!t) return;
+      if (t.type === 'stock') { toast('حذف از انبار از طریق ویرایش موجودی صفر انجام میشود'); return; }
       if (t.type === 'build') {
         var b = state.builds.filter(function (x) { return String(x.id) === String(t.id); })[0];
         if (b) {
