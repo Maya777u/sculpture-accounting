@@ -155,12 +155,12 @@
                 <button type="button" class="stp-btn" data-dir="1" aria-label="زیاد کردن">+</button>
               </div>
             </div>
-            <div class="sell-box price-box">
-              <span class="sb-lbl">قیمت هر عدد</span>
-              <div class="money-field">
-                <span class="mf-cur">تومان</span>
-                <input type="text" id="sPrice" class="mf-input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰">
-              </div>
+          </div>
+          <div class="sell-box price-box f-full">
+            <span class="sb-lbl">قیمت هر عدد</span>
+            <div class="money-field">
+              <span class="mf-cur">تومان</span>
+              <input type="text" id="sPrice" class="mf-input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰">
             </div>
           </div>
           <label class="f-full">نحوه فروش
@@ -179,7 +179,10 @@
             </div>
           </label>
         </div>
-        <div class="total-preview" id="sellTotal"><span class="tp-lbl">جمع فروش</span><b class="tp-val">۰ تومان</b></div>
+        <div class="total-preview" id="sellTotal">
+          <div class="tp-main"><span class="tp-lbl">جمع فروش</span><b class="tp-val">۰ تومان</b></div>
+          <div class="tp-words" id="sellTotalWords">—</div>
+        </div>
         <button class="btn primary" id="btnSellAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> ثبت فروش</button>
       </div>
 

@@ -65,6 +65,34 @@
   }
   function fmtMoney(x) { return fnum(x) + ' تومان'; }
 
+  /* ---------- عدد به حروف فارسی ---------- */
+  function numToWords(n) {
+    n = Math.round(Number(n) || 0);
+    if (n === 0) return 'صفر';
+    var yakan = ['','یک','دو','سه','چهار','پنج','شش','هفت','هشت','نه'];
+    var dah = ['','','بیست','سی','چهل','پنجاه','شصت','هفتاد','هشتاد','نود'];
+    var dahyek = ['','یازده','دوازده','سیزده','چهارده','پانزده','شانزده','هفده','هجده','نوزده'];
+    var sadha = ['','صد','دویست','سیصد','چهارصد','پانصد','ششصد','هفتصد','هشتصد','نهصد'];
+    var scale = ['','هزار','میلیون','میلیارد'];
+    function three(x) {
+      var parts = [];
+      var s = Math.floor(x/100), d = Math.floor((x%100)/10), y = x%10;
+      if (s) parts.push(sadha[s]);
+      if (d === 1) parts.push(dahyek[y]);
+      else { if (d) parts.push(dah[d]); if (y) parts.push(yakan[y]); }
+      return parts.join(' و ');
+    }
+    var groups = [];
+    while (n > 0) { groups.push(n % 1000); n = Math.floor(n / 1000); }
+    var out = [];
+    for (var i = groups.length - 1; i >= 0; i--) {
+      if (!groups[i]) continue;
+      out.push(three(groups[i]) + (scale[i] ? ' ' + scale[i] : ''));
+    }
+    return out.join(' و ');
+  }
+
+
   /* قالب‌بندی زنده اعداد با جداکننده هزارگان — ورودی قیمت */
   function faToEn(str) {
     return String(str || '')
@@ -1129,7 +1157,10 @@
       var qty = parseInt($('sQty').value, 10) || 0;
       var price = parseNum($('sPrice').value);
       var val = document.querySelector('.tp-val');
-      if (val) val.textContent = fmtMoney(qty * price);
+      var w = document.getElementById('sellTotalWords');
+      var sum = qty * price;
+      if (val) val.textContent = fmtMoney(sum);
+      if (w) w.textContent = sum > 0 ? (numToWords(sum) + ' تومان') : '—';
     }
     ['sQty','sPrice'].forEach(function(id){
       var el = $(id);

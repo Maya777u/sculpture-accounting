@@ -481,3 +481,10 @@ select.input{appearance:none;-webkit-appearance:none}
 }
 .tp-lbl{font-size:10.5px;font-weight:800;color:var(--dim);letter-spacing:.3px}
 .tp-val{font-size:15px;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;text-shadow:0 0 18px var(--accent-glow)}
+
+/* price below qty */
+.sell-row{grid-template-columns:1fr}
+.price-box{margin-top:9px}
+.total-preview{flex-direction:column;align-items:stretch;gap:4px;padding:10px 13px}
+.tp-main{display:flex;align-items:center;justify-content:space-between}
+.tp-words{font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.2px;border-top:1px dashed var(--line);padding-top:6px;text-align:left}
