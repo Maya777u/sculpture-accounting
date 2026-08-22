@@ -371,7 +371,7 @@
         makeField('نام', 'eName', 'text', b.name) +
         makeField('تعداد', 'eQty', 'number', b.qty, 1) +
         makeField('قیمت فروش', 'ePrice', 'number', b.price) +
-        makeField('تاریخ (شمسی)', 'eDate', 'text', J.jToStrEn(b.jy, b.jm, b.jd));
+        makeField('تاریخ (شمسی)', 'eDate', 'text', J.jToStrEn({ jy: b.jy, jm: b.jm, jd: b.jd }));
     } else {
       var s = state.sales.filter(function (x) { return String(x.id) === String(target.id); })[0];
       if (!s) { toast('ردیف پیدا نشد', 'err'); return; }
@@ -381,7 +381,7 @@
         makeField('نام', 'eName', 'text', s.name) +
         makeField('تعداد', 'eQty', 'number', s.qty, 1) +
         makeField('قیمت هر عدد', 'ePrice', 'number', s.price) +
-        makeField('تاریخ (شمسی)', 'eDate', 'text', J.jToStrEn(s.jy, s.jm, s.jd)) +
+        makeField('تاریخ (شمسی)', 'eDate', 'text', J.jToStrEn({ jy: s.jy, jm: s.jm, jd: s.jd })) +
         '<label class="f-full">نحوه فروش<select id="eChannel" class="input">' + opts + '</select></label>';
       $('eChannel').value = s.channel;
     }

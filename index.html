@@ -353,6 +353,14 @@
   <script src="js/forge-particles.js"></script>
   <script src="js/app.js"></script>
   <script>
+    /* ثبت سرویس‌ورکر — PWA آفلاین */
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+      navigator.serviceWorker.register('sw.js').catch(function (e) {
+        console.warn('SW register failed:', e);
+      });
+    }
+  </script>
+  <script>
     /* تم‌سیچر در تنظیمات — فقط Ultra + Forge */
     (function() {
       var css = document.getElementById('themeCSS');
