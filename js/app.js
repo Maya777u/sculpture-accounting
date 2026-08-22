@@ -845,8 +845,9 @@
   }
 
   /* helper برای کارت‌های جمع‌بندی ماه */
-  function mdCell(ico, val, color) {
-    return '<div class="md-cell ' + color + '"><span class="md-ico">' + ico + '</span><div class="md-val">' + val + '</div></div>';
+  function mdCell(lbl, val, color) {
+    var ch=(lbl||'')[0]||'•';
+    return '<div class="md-cell ' + color + '"><span class="md-ico">' + ch + '</span><div class="md-body"><span class="md-lbl">' + lbl + '</span><span class="md-val">' + val + '</span></div></div>';
   }
 
   /* مودال حساب کتاب کامل ماه */
