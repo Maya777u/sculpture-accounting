@@ -471,6 +471,7 @@ select.input{appearance:none;-webkit-appearance:none;background-image:linear-gra
 .combo-wrap.open .combo-btn svg{transform:rotate(180deg)}
 .combo-wrap.open .combo-input{border-color:var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft)}
 .combo-list{position:absolute;top:calc(100% + 6px);inset-inline:0;z-index:30;background:#0B1730;border:1px solid rgba(255,255,255,.14);border-radius:12px;box-shadow:0 16px 32px rgba(0,0,0,.48);max-height:200px;overflow:auto;padding:5px;display:grid;gap:3px}
+.combo-list[hidden]{display:none !important}
 .combo-opt{background:transparent;border:none;border-radius:8px;padding:8px 10px;text-align:right;font:700 12.5px var(--font);color:var(--text);cursor:pointer;transition:.11s}
 .combo-opt:hover{background:rgba(255,255,255,.07);color:var(--accent)}
 .combo-opt:active{background:var(--accent-soft)}
