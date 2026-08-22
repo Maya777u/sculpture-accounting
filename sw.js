@@ -1,11 +1,9 @@
 /* مجسمه‌حساب — Service Worker */
-const CACHE = 'sculpture-accounting-v3';
+const CACHE = 'sculpture-accounting-v4';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './css/style.css',
-  './css/style-ultra.css',
   './css/style-forge.css',
   './js/jalali.js',
   './js/db.js',

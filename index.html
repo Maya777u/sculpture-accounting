@@ -13,17 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style-forge.css" id="themeCSS">
-  <script>
-    /* تم‌سیچر: ذخیره انتخاب در localStorage */
-    (function() {
-      var saved = localStorage.getItem('sact_theme');
-      if (saved === 'classic') {
-        document.getElementById('themeCSS').href = 'css/style.css';
-      } else if (saved === 'forge') {
-        document.getElementById('themeCSS').href = 'css/style-forge.css';
-      }
-    })();
-  </script>
+
 </head>
 <body>
 
@@ -98,7 +88,11 @@
             <input type="text" id="bName" class="input" placeholder="مثلا: هواپیمای استیم‌پانک">
           </label>
           <label class="f-half">تعداد <span class="req">*</span>
-            <input type="number" id="bQty" class="input" min="1" value="1" inputmode="numeric">
+            <div class="stepper" data-target="bQty">
+              <button type="button" class="stp-btn" data-dir="-1" aria-label="کم کردن">−</button>
+              <input type="number" id="bQty" class="stp-input" min="1" value="1" inputmode="numeric" readonly>
+              <button type="button" class="stp-btn" data-dir="1" aria-label="زیاد کردن">+</button>
+            </div>
           </label>
           <label class="f-half">قیمت فروش هر عدد
             <input type="text" id="bPrice" class="input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰" dir="ltr" style="text-align:left">
@@ -110,7 +104,7 @@
             </div>
           </label>
         </div>
-        <button class="btn primary big" id="btnBuild">+ ثبت در انبار</button>
+        <button class="btn primary" id="btnBuild" style="width:100%;margin-top:12px">ثبت در انبار</button>
       </div>
 
       <div class="cpanel">
@@ -150,7 +144,11 @@
             <select id="sName" class="input"></select>
           </label>
           <label class="f-half">تعداد
-            <input type="number" id="sQty" class="input" min="1" value="1" inputmode="numeric">
+            <div class="stepper" data-target="sQty">
+              <button type="button" class="stp-btn" data-dir="-1" aria-label="کم کردن">−</button>
+              <input type="number" id="sQty" class="stp-input" min="1" value="1" inputmode="numeric" readonly>
+              <button type="button" class="stp-btn" data-dir="1" aria-label="زیاد کردن">+</button>
+            </div>
           </label>
           <label class="f-half">قیمت هر عدد
             <input type="text" id="sPrice" class="input" inputmode="numeric" dir="ltr" style="text-align:left">
@@ -171,7 +169,7 @@
             </div>
           </label>
         </div>
-        <button class="btn primary big" id="btnSellAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> ثبت فروش</button>
+        <button class="btn primary" id="btnSellAdd" style="width:100%;margin-top:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> ثبت فروش</button>
       </div>
 
       <div class="cpanel">
@@ -331,12 +329,7 @@
         <h3><span class="mh-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>تنظیمات</h3>
         <button class="icon-btn modal-close" data-close="settingsModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
-      <p class="set-desc">تم برنامه:</p>
-      <div class="theme-row" id="settingsThemes">
-        <button class="theme-opt active" data-theme="ultra">Ultra</button>
-        <button class="theme-opt" data-theme="forge">Forge — تیره دقیق</button>
-      </div>
-      <div class="hr"></div>
+
       <p class="set-desc">پشتیبان‌گیری و بازیابی — فایل JSON کامل:</p>
       <div class="set-actions">
         <button class="btn primary" id="btnBackup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v13"/><path d="M7 11l5 5 5-5"/><path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg> دانلود پشتیبان</button>
@@ -359,30 +352,6 @@
         console.warn('SW register failed:', e);
       });
     }
-  </script>
-  <script>
-    /* تم‌سیچر در تنظیمات — فقط Ultra + Forge */
-    (function() {
-      var css = document.getElementById('themeCSS');
-      var btns = document.querySelectorAll('.theme-opt');
-      var themes = { ultra: 'css/style-ultra.css', forge: 'css/style-forge.css' };
-      var pc = document.getElementById('forge-particles');
-      btns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var theme = btn.dataset.theme;
-          btns.forEach(function(b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          css.href = themes[theme];
-          localStorage.setItem('sact_theme', theme);
-          if (pc) pc.style.display = (theme === 'forge') ? 'block' : 'none';
-        });
-      });
-      var saved = localStorage.getItem('sact_theme');
-      if (saved && themes[saved]) {
-        css.href = themes[saved];
-        btns.forEach(function(b) { b.classList.remove('active'); if (b.dataset.theme === saved) b.classList.add('active'); });
-      }
-    })();
   </script>
 </body>
 </html>

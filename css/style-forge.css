@@ -59,7 +59,7 @@ body::before{
 }
 .splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
 .splash-mark{width:44px;height:44px;color:var(--accent)}
-.splash-brand{margin-top:10px;font-size:22px;font-weight:900;letter-spacing:.5px;color:var(--text)}
+.splash-brand{margin-top:10px;font-size:19px;font-weight:900;letter-spacing:.5px;color:var(--text)}
 .splash-sub{color:var(--dim2);font-size:11.5px;margin-top:2px}
 .splash-bar{width:96px;height:2px;background:rgba(255,255,255,.08);border-radius:99px;margin-top:18px;overflow:hidden}
 .splash-bar span{display:block;height:100%;width:38%;background:var(--accent);border-radius:99px;animation:loadbar 1.05s ease-in-out infinite}
@@ -94,7 +94,7 @@ body::before{
 .view{display:none;animation:fadeUp .28s ease}
 .view.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.greet h2{font-size:18px;font-weight:900;letter-spacing:.2px}
+.greet h2{font-size:15.5px;font-weight:900;letter-spacing:.2px}
 .greet p{color:var(--dim);font-size:11.5px;margin-top:2px}
 /* ---- KPI ---- */
 .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0 12px}
@@ -107,7 +107,7 @@ body::before{
 .kpi-ico.gold-ic{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line)}
 .kpi-ico.blue-ic,.kpi-ico.red-ic,.kpi-ico.green-ic{background:rgba(255,255,255,.06);color:var(--dim)}
 .kpi-ico svg{width:15px;height:15px}
-.kpi-num{font-size:18px;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi-num{font-size:16px;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.2}
 .kpi-lbl{font-size:10px;color:var(--dim2);font-weight:700;margin-top:3px;letter-spacing:.3px}
 
 /* ---- Quick Actions ---- */
@@ -126,15 +126,17 @@ body::before{
 .qaction.build .qa-ico{background:var(--accent);color:#0a0a0a;border-color:transparent}
 .qaction.sell .qa-ico{background:rgba(255,255,255,.08);color:var(--text)}
 .qa-ico svg{width:18px;height:18px}
-.qa-title{font-size:12.5px;font-weight:800;letter-spacing:.2px}
+.qa-title{font-size:11.5px;font-weight:800;letter-spacing:.2px}
 
 /* ---- CPanel ---- */
 .cpanel{
-  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)) , var(--panel);
+  border:1px solid var(--line);border-radius:14px;
   padding:14px;margin-bottom:12px;position:relative;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 6px 18px rgba(0,0,0,.28);
 }
 .cpanel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;gap:10px}
-.cpanel-head h3{font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:7px;letter-spacing:.2px;color:var(--text)}
+.cpanel-head h3{font-size:11.5px;font-weight:800;display:flex;align-items:center;gap:7px;letter-spacing:.2px;color:var(--text)}
 .cpanel-head h3 .hd-ico{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--dim);flex:none}
 .cpanel-head h3 .hd-ico.accent{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line)}
 .cpanel-head h3 .hd-ico svg{width:12px;height:12px}
@@ -259,7 +261,7 @@ select.input{appearance:none;-webkit-appearance:none}
 .sc-name{font-size:12.5px;font-weight:800;color:var(--text)}
 .sc-warn{font-size:9px;font-weight:800;padding:2px 8px;border-radius:99px;background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.22)}
 .sc-ok{font-size:9px;font-weight:800;padding:2px 8px;border-radius:99px;background:rgba(16,185,129,.10);color:#6ee7b7;border:1px solid rgba(16,185,129,.22)}
-.sc-qty{font-size:28px;font-weight:900;color:var(--text);line-height:1.2;font-variant-numeric:tabular-nums}
+.sc-qty{font-size:24px;font-weight:900;color:var(--text);line-height:1.2;font-variant-numeric:tabular-nums}
 .stock-card.low .sc-qty{color:var(--fire)}
 .sc-sub{font-size:10px;color:var(--dim2);font-weight:600}
 .sc-price{font-size:11px;color:var(--dim);margin-top:6px;font-variant-numeric:tabular-nums}
@@ -336,6 +338,52 @@ select.input{appearance:none;-webkit-appearance:none}
 .wk-table td{font-size:12px;padding:8px 8px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text)}
 .wk-table td small{color:var(--dim2);font-size:10px}
 .wk-table .num{font-variant-numeric:tabular-nums;font-weight:800;text-align:left;direction:ltr}
+
+
+/* ---- Stepper (quantity -/+) ---- */
+.stepper{
+  display:flex;align-items:center;gap:0;
+  background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;margin-top:5px;
+}
+.stp-btn{
+  width:44px;height:42px;flex:none;
+  background:rgba(255,255,255,.06);border:none;color:var(--text);
+  font-size:18px;font-weight:800;cursor:pointer;
+  display:grid;place-items:center;transition:.12s;
+  border-inline-end:1px solid var(--line);
+}
+.stp-btn:last-child{border-inline-end:none;border-inline-start:1px solid var(--line)}
+.stp-btn:active{background:var(--accent);color:#111827}
+.stp-input{
+  flex:1;min-width:0;text-align:center;
+  background:transparent;border:none;color:var(--text);
+  font-family:var(--font);font-size:15px;font-weight:900;
+  padding:8px 4px;outline:none;font-variant-numeric:tabular-nums;
+}
+.stp-input::-webkit-inner-spin-button,.stp-input::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0 }
+.stp-input{ -moz-appearance:textfield }
+
+/* ---- Weekly card — framed ---- */
+.wk-card{
+  background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;
+  padding:10px;margin-top:8px;
+}
+.wk-card-head{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:10px;font-weight:800;color:var(--dim2);letter-spacing:.3px;
+  padding-bottom:7px;margin-bottom:7px;border-bottom:1px solid var(--line);
+}
+.wk-card-head b{color:var(--text);font-size:11px}
+.wk-range b{color:var(--accent)}
+
+/* ---- Buttons — compact professional ---- */
+.btn{padding:9px 14px;border-radius:10px;font-size:12px}
+.btn.primary{letter-spacing:.2px}
+#btnBuild, #btnSellAdd{padding:10px 14px;font-size:12.5px}
+
+/* ---- Edit qty stepper inside modal ---- */
+#editFields .stepper{margin-top:5px}
 
 /* ---- Toast ---- */
 .toast{

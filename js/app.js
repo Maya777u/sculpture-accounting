@@ -390,6 +390,14 @@
   }
 
   function makeField(lbl, id, type, val, min) {
+    if (id === 'eQty') {
+      return '<label class="f-full">' + lbl +
+        '<div class="stepper" data-target="eQty">' +
+        '<button type="button" class="stp-btn" data-dir="-1">\u2212</button>' +
+        '<input id="' + id + '" class="stp-input" type="number" value="' + (val === undefined ? '1' : val) + '" min="1" readonly>' +
+        '<button type="button" class="stp-btn" data-dir="1">+</button>' +
+        '</div></label>';
+    }
     var isMoney = (id === 'ePrice');
     if (isMoney) {
       var v = (val === undefined || val === null || val === '') ? '' : Number(val).toLocaleString('en-US');
@@ -742,7 +750,7 @@
     var max = Math.max.apply(null, weekSales.concat(weekBuilds).concat([1]));
     var labels = ['هفته ۱', 'هفته ۲', 'هفته ۳', 'هفته ۴', 'هفته ۵'];
 
-    box.innerHTML = '<div class="wd-bars">' + weekSales.map(function (c, i) {
+    box.innerHTML = '<div class="wk-card"><div class="wd-bars">' + weekSales.map(function (c, i) {
       var hS = Math.max(Math.round(c / max * 100), c > 0 ? 10 : 2);
       var hB = Math.max(Math.round(weekBuilds[i] / max * 100), weekBuilds[i] > 0 ? 10 : 2);
       var has = c > 0 || weekBuilds[i] > 0;
@@ -755,7 +763,7 @@
         '<div class="wd-lbl">' + labels[i] + '</div>' +
         (has ? '<div style="font-size:8px;color:var(--dim2);font-weight:700;margin-top:1px">' + fnum(total) + '</div>' : '') +
         '</div>';
-    }).join('') + '</div>';
+    }).join('') + '</div></div>';
     box.innerHTML += '<div class="chart-legend"><span class="lg lg-in">فروش</span><span class="lg build-color-lg">ساخت</span><span class="lg-note">— روی هر هفته بزن برای جزئیات</span></div>';
 
     box.querySelectorAll('.wd-col.clickable').forEach(function (col) {
@@ -1021,6 +1029,33 @@
     bindMoneyInput($('bPrice'));
     bindMoneyInput($('sPrice'));
     bindMoneyInput($('ePrice'));
+    // Stepper -/+ (build + sell)
+    document.querySelectorAll('.stepper').forEach(function(wrap){
+      var input = wrap.querySelector('.stp-input');
+      wrap.querySelectorAll('.stp-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var dir = parseInt(btn.dataset.dir,10);
+          var v = parseInt(input.value,10) || 1;
+          v = Math.max(1, v + dir);
+          input.value = v;
+        });
+      });
+    });
+    // Also delegate for dynamically created steppers inside edit modal
+    document.addEventListener('click', function(e){
+      var b = e.target.closest('.stp-btn');
+      if(!b) return;
+      var wrap = b.closest('.stepper');
+      if(!wrap) return;
+      // only handle if input is inside modal (editFields)
+      var inp = wrap.querySelector('.stp-input');
+      if(!inp || inp.id !== 'eQty') return;
+      var dir = parseInt(b.dataset.dir,10);
+      var v = parseInt(inp.value,10) || 1;
+      v = Math.max(1, v + dir);
+      inp.value = v;
+    });
+
     $('btnBackup').addEventListener('click', doBackup);
     $('btnRestore').addEventListener('click', function () { $('restoreFile').click(); });
     $('restoreFile').addEventListener('change', function (e) {
