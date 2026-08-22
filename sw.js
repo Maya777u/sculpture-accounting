@@ -1,5 +1,5 @@
 /* مجسمه‌حساب — Service Worker */
-const CACHE = 'sculpture-accounting-v11';
+const CACHE = 'sculpture-accounting-v12';
 const ASSETS = [
   './',
   './index.html',
