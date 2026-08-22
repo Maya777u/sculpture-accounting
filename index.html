@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style-forge.css" id="themeCSS">
+  <link rel="stylesheet" href="css/style-atlas.css" id="themeCSS">
 
 </head>
 <body>
@@ -95,7 +95,7 @@
             </div>
           </label>
           <label class="f-half">قیمت فروش هر عدد
-            <input type="text" id="bPrice" class="input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰" dir="ltr" style="text-align:left">
+            <div class="price-wrap"><input type="text" id="bPrice" class="input ltr price-input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰"></div>
           </label>
           <label class="f-full">تاریخ ساخت (شمسی)
             <div class="date-row">
@@ -151,7 +151,7 @@
             </div>
           </label>
           <label class="f-half">قیمت هر عدد
-            <input type="text" id="sPrice" class="input" inputmode="numeric" dir="ltr" style="text-align:left">
+            <div class="price-wrap"><input type="text" id="sPrice" class="input ltr price-input" inputmode="numeric" placeholder="۴۵۰٬۰۰۰"></div>
           </label>
           <label class="f-full">نحوه فروش
             <select id="sChannel" class="input">
@@ -330,6 +330,12 @@
         <button class="icon-btn modal-close" data-close="settingsModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
 
+      <p class="set-desc">تم برنامه:</p>
+      <div class="theme-row" id="settingsThemes" style="display:flex;gap:8px;margin-bottom:10px">
+        <button class="theme-opt active" data-theme="atlas" style="flex:1;padding:8px;border-radius:9px;border:1px solid var(--accent-line);background:var(--accent-soft);color:var(--accent);font:800 11px var(--font);cursor:pointer">Atlas — جدید</button>
+        <button class="theme-opt" data-theme="forge" style="flex:1;padding:8px;border-radius:9px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--dim);font:800 11px var(--font);cursor:pointer">Forge — قبلی</button>
+      </div>
+      <div class="hr"></div>
       <p class="set-desc">پشتیبان‌گیری و بازیابی — فایل JSON کامل:</p>
       <div class="set-actions">
         <button class="btn primary" id="btnBackup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v13"/><path d="M7 11l5 5 5-5"/><path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg> دانلود پشتیبان</button>
@@ -345,6 +351,33 @@
   <script src="js/db.js"></script>
   <script src="js/forge-particles.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    /* تم‌سیچر — Atlas (پیش‌فرض) / Forge (قبلی) */
+    (function(){
+      var css=document.getElementById('themeCSS');
+      var themes={atlas:'css/style-atlas.css', forge:'css/style-forge.css'};
+      var saved=localStorage.getItem('sact_theme');
+      if(saved && themes[saved]) css.href=themes[saved];
+      document.addEventListener('click', function(e){
+        var b=e.target.closest('.theme-opt'); if(!b) return;
+        var th=b.dataset.theme; if(!themes[th]) return;
+        css.href=themes[th]; localStorage.setItem('sact_theme', th);
+        document.querySelectorAll('.theme-opt').forEach(function(x){
+          x.style.background=x.dataset.theme===th?'var(--accent-soft)':'rgba(255,255,255,.05)';
+          x.style.color=x.dataset.theme===th?'var(--accent)':'var(--dim)';
+          x.style.borderColor=x.dataset.theme===th?'var(--accent-line)':'var(--line)';
+        });
+      });
+      // sync active state on load
+      var cur=(saved && themes[saved])?saved:'atlas';
+      document.querySelectorAll('.theme-opt').forEach(function(x){
+        var on=x.dataset.theme===cur;
+        x.style.background=on?'var(--accent-soft)':'rgba(255,255,255,.05)';
+        x.style.color=on?'var(--accent)':'var(--dim)';
+        x.style.borderColor=on?'var(--accent-line)':'var(--line)';
+      });
+    })();
+  </script>
   <script>
     /* ثبت سرویس‌ورکر — PWA آفلاین */
     if ('serviceWorker' in navigator && location.protocol === 'https:') {

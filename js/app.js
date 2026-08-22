@@ -105,6 +105,9 @@
     $('buildDateToday').textContent = 'امروز: ' + J.jToStr(t);
     $('sellDateToday').textContent = 'امروز: ' + J.jToStr(t);
     $('stockDate').textContent = J.jToStr(t);
+    var todayStr = J.jToStrEn({ jy: t.jy, jm: t.jm, jd: t.jd });
+    if ($('bDate') && !$('bDate').value) $('bDate').value = todayStr;
+    if ($('sDate') && !$('sDate').value) $('sDate').value = todayStr;
   }
 
   /* ================= DASHBOARD ================= */
@@ -186,7 +189,7 @@
 
       DB.add('builds', build).then(function () {
         state.builds.push(build);
-        $('bName').value = ''; $('bQty').value = '1'; $('bPrice').value = ''; $('bDate').value = '';
+        $('bName').value = ''; $('bQty').value = '1'; $('bPrice').value = ''; $('bDate').value = J.jToStrEn(J.today());
         renderAll();
         toast('✅ «' + name + '» ×' + fnum(qty) + ' به انبار اضافه شد');
       });
@@ -329,7 +332,7 @@
       DB.put('stocks', st);
       DB.add('sales', sale).then(function () {
         state.sales.push(sale);
-        $('sQty').value = '1'; $('sDate').value = '';
+        $('sQty').value = '1'; $('sDate').value = J.jToStrEn(J.today());
         renderAll();
         toast('✅ فروش ثبت شد: ' + name + ' ×' + fnum(qty));
       });
