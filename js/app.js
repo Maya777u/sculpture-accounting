@@ -55,6 +55,7 @@
     function norm(x){
       x.jy=+x.jy||0; x.jm=+x.jm||0; x.jd=+x.jd||0;
       x.hh=x.hh||''; x.ts=x.ts||0;
+      if (x.channel==='سایر') x.channel='شاهین';
       if (!x.dateKey) x.dateKey = JKeyOf(x.jy, x.jm, x.jd);
       else x.dateKey=+x.dateKey||JKeyOf(x.jy, x.jm, x.jd);
     }
@@ -62,7 +63,7 @@
     state.sales.forEach(norm);
     // self-heal: اگر رشته‌ای بود، تو DB هم عددی ذخیره کن (یک‌بار)
     try{
-      state.sales.forEach(function(s){ if(typeof s.jy==='string'||typeof s.jm==='string'||typeof s.jd==='string'){ DB.put('sales', s); }});
+      state.sales.forEach(function(s){ if(typeof s.jy==='string'||typeof s.jm==='string'||typeof s.jd==='string'||s.channel==='سایر'){ if(s.channel==='سایر') s.channel='شاهین'; DB.put('sales', s); }});
       state.builds.forEach(function(b){ if(typeof b.jy==='string'||typeof b.jm==='string'||typeof b.jd==='string'){ DB.put('builds', b); }});
     }catch(e){}
   }
