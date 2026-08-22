@@ -131,7 +131,7 @@
     $('kpiBestDay').textContent = bestDayName;
 
     var h = new Date().getHours();
-    $('greetText').textContent = h < 12 ? 'صبح بخیر استاد ☀️' : (h < 17 ? 'ظهر بخیر استاد 🌤️' : 'شب بخیر استاد 🌙');
+    $('greetText').textContent = h < 12 ? 'صبح بخیر استاد' : (h < 17 ? 'ظهر بخیر استاد' : 'شب بخیر استاد');
     $('greetSub').textContent = J.fullLabel(t);
 
     renderDashTopSellers(m);
@@ -147,7 +147,7 @@
     var arr = Object.keys(agg).map(function (k) { return { name: k, qty: agg[k] }; })
       .sort(function (a, b) { return b.qty - a.qty; }).slice(0, 3);
     if (!arr.length) {
-      box.innerHTML = '<div class="empty small">هنوز فروشی ثبت نشده — اولین فروش را ثبت کن 🎯</div>';
+      box.innerHTML = '<div class="empty small">هنوز فروشی ثبت نشده — اولین فروش را ثبت کن</div>';
       return;
     }
     box.innerHTML = arr.map(function (r, i) {
@@ -196,7 +196,7 @@
   function renderBuildHistory() {
     var box = $('buildHistory');
     if (!state.builds.length) {
-      box.innerHTML = '<div class="empty">هنوز ساخت‌ی ثبت نشده 🏗️</div>';
+      box.innerHTML = '<div class="empty">هنوز ساختی ثبت نشده</div>';
       return;
     }
     var sorted = state.builds.slice().sort(function (a, b) { return String(b.id) > String(a.id) ? 1 : -1; }).slice(0, 20);
@@ -204,7 +204,7 @@
       var j = { jy: b.jy, jm: b.jm, jd: b.jd };
       return '<div class="trow clickable" data-type="build" data-id="' + b.id + '">' +
         '<div class="n"><b>' + b.name + '</b><small>' + J.jToStr(j) + '</small></div>' +
-        '<span class="v"><span class="v green">+' + fnum(b.qty) + '</span> <span class="edit-ic">✏️</span></span></div>';
+        '<span class="v"><span class="v green">+' + fnum(b.qty) + '</span> <svg class="edit-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span></div>';
     }).join('');
     box.querySelectorAll('.trow.clickable').forEach(function (row) {
       row.addEventListener('click', function () {
@@ -247,7 +247,7 @@
   function renderStockView() {
     var grid = $('stockCards');
     if (!state.stocks.length) {
-      grid.innerHTML = '<div class="empty">انبار خالی است — اول ساخت ثبت کن 📦</div>';
+      grid.innerHTML = '<div class="empty">انبار خالی است — اول ساخت ثبت کن</div>';
       return;
     }
     var sorted = state.stocks.slice().sort(function (a, b) { return b.qty - a.qty; });
@@ -258,7 +258,7 @@
         (low ? '<span class="sc-warn">کم</span>' : '<span class="sc-ok">موجود</span>') + '</div>' +
         '<div class="sc-qty">' + fnum(st.qty) + '</div>' +
         '<div class="sc-sub">عدد در انبار</div>' +
-        (st.price ? '<div class="sc-price">💰 ' + fmtMoney(st.price) + '</div>' : '') +
+        (st.price ? '<div class="sc-price">' + fmtMoney(st.price) + '</div>' : '') +
         '</div>';
     }).join('');
   }
@@ -266,7 +266,7 @@
   function renderStockChips() {
     var box = $('stockChips');
     if (!state.stocks.length) {
-      box.innerHTML = '<div class="empty small">انبار خالی است 📦</div>';
+      box.innerHTML = '<div class="empty small">انبار خالی است</div>';
       return;
     }
     box.innerHTML = '';
@@ -343,7 +343,7 @@
   function renderRecentSales() {
     var box = $('recentSales');
     if (!state.sales.length) {
-      box.innerHTML = '<div class="empty small">هنوز فروشی ثبت نشده 🕘</div>';
+      box.innerHTML = '<div class="empty small">هنوز فروشی ثبت نشده</div>';
       return;
     }
     var sorted = state.sales.slice().sort(function (a, b) { return String(b.id) > String(a.id) ? 1 : -1; }).slice(0, 15);
@@ -351,7 +351,7 @@
       var j = { jy: s.jy, jm: s.jm, jd: s.jd };
       return '<div class="trow clickable" data-type="sale" data-id="' + s.id + '">' +
         '<div class="n"><b>' + s.name + '</b><small>' + J.jToStr(j) + ' · ' + (s.channel || '') + '</small></div>' +
-        '<span class="v gold">' + fmtMoney(s.qty * s.price) + ' <span class="edit-ic">✏️</span></span></div>';
+        '<span class="v gold">' + fmtMoney(s.qty * s.price) + ' <svg class="edit-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span></div>';
     }).join('');
     box.querySelectorAll('.trow.clickable').forEach(function (row) {
       row.addEventListener('click', function () { openEditModal({ type: row.dataset.type, id: row.dataset.id }); });
@@ -366,7 +366,7 @@
     if (target.type === 'build') {
       var b = state.builds.filter(function (x) { return String(x.id) === String(target.id); })[0];
       if (!b) { toast('ردیف پیدا نشد', 'err'); return; }
-      $('editModalTitle').textContent = '✏️ ویرایش ساخت — ' + b.name;
+      $('editModalTitle').textContent = 'ویرایش ساخت — ' + b.name;
       fields.innerHTML =
         makeField('نام', 'eName', 'text', b.name) +
         makeField('تعداد', 'eQty', 'number', b.qty, 1) +
@@ -375,7 +375,7 @@
     } else {
       var s = state.sales.filter(function (x) { return String(x.id) === String(target.id); })[0];
       if (!s) { toast('ردیف پیدا نشد', 'err'); return; }
-      $('editModalTitle').textContent = '✏️ ویرایش فروش — ' + s.name;
+      $('editModalTitle').textContent = 'ویرایش فروش — ' + s.name;
       var opts = CHANNELS.map(function (c) { return '<option' + (c === s.channel ? ' selected' : '') + '>' + c + '</option>'; }).join('');
       fields.innerHTML =
         makeField('نام', 'eName', 'text', s.name) +
@@ -444,7 +444,7 @@
       }
       closeEdit();
       renderAll();
-      toast('💾 ذخیره شد');
+      toast('ذخیره شد');
     });
 
     $('editDelete').addEventListener('click', function () {
@@ -467,7 +467,7 @@
       }
       closeEdit();
       renderAll();
-      toast('🗑️ حذف شد');
+      toast('حذف شد');
     });
     $('editClose').addEventListener('click', closeEdit);
   }
@@ -667,7 +667,7 @@
   function openMonthDetail(m) {
     var jy = m.jy, jm = m.jm;
     var mk = jy * 100 + jm;
-    $('monthModalTitle').textContent = '📌 حساب کتاب — ' + J.monthName(jm) + ' ' + J.faNum(jy);
+    var _mt=document.getElementById('monthModalTitleText'); if(_mt) _mt.textContent='حساب کتاب — ' + J.monthName(jm) + ' ' + J.faNum(jy); else $('monthModalTitle').textContent='حساب کتاب — ' + J.monthName(jm) + ' ' + J.faNum(jy);
 
     var sales = state.sales.filter(function (s) { return monthOf(s) === mk; });
     var builds = state.builds.filter(function (b) { return monthOf(b) === mk; });
@@ -678,9 +678,9 @@
 
     $('mdSummary').innerHTML =
       '<div class="md-grid">' +
-      mdCell('💰 درآمد', fmtMoney(income), 'gold') +
-      mdCell('🛒 تعداد فروش', fnum(soldQty) + ' عدد', 'blue') +
-      mdCell('🏗️ تعداد ساخت', fnum(builtQty) + ' عدد', 'green') +
+      mdCell('درآمد', fmtMoney(income), 'gold') +
+      mdCell('تعداد فروش', fnum(soldQty) + ' عدد', 'blue') +
+      mdCell('تعداد ساخت', fnum(builtQty) + ' عدد', 'green') +
       '</div>';
 
     // روزهای پرفروش
@@ -695,7 +695,7 @@
       ? topDays.map(function (r) {
           var parts = r.d.split('/');
           var name = J.monthName(parseInt(parts[1], 10));
-          return '<div class="md-day-row">📅 ' + J.faNum(parts[2]) + ' ' + name + ' — <b>' + fnum(r.q) + ' فروش</b></div>';
+          return '<div class="md-day-row">' + J.faNum(parts[2]) + ' ' + name + ' — <b>' + fnum(r.q) + ' فروش</b></div>';
         }).join('')
       : '<div class="empty small">فروشی نبود</div>';
 
@@ -746,15 +746,17 @@
       var hS = Math.max(Math.round(c / max * 100), c > 0 ? 10 : 2);
       var hB = Math.max(Math.round(weekBuilds[i] / max * 100), weekBuilds[i] > 0 ? 10 : 2);
       var has = c > 0 || weekBuilds[i] > 0;
+      var total = c + weekBuilds[i];
       return '<div class="wd-col' + (has ? ' clickable' : '') + '" data-wk="' + i + '">' +
-        '<span class="wd-num build">' + (weekBuilds[i] > 0 ? fnum(weekBuilds[i]) : '') + '</span>' +
+        '<span class="wd-num build">' + (weekBuilds[i] > 0 ? fnum(weekBuilds[i]) : '&nbsp;') + '</span>' +
         '<div class="wd-bar build-color" style="height:' + hB + '%"></div>' +
-        '<span class="wd-num">' + (c > 0 ? fnum(c) : '') + '</span>' +
+        '<span class="wd-num">' + (c > 0 ? fnum(c) : '&nbsp;') + '</span>' +
         '<div class="wd-bar" style="height:' + hS + '%"></div>' +
         '<div class="wd-lbl">' + labels[i] + '</div>' +
+        (has ? '<div style="font-size:8px;color:var(--dim2);font-weight:700;margin-top:1px">' + fnum(total) + '</div>' : '') +
         '</div>';
     }).join('') + '</div>';
-    box.innerHTML += '<div class="chart-legend"><span class="lg lg-in">فروش</span><span class="lg lg-in build-color-lg">ساخت</span></div>';
+    box.innerHTML += '<div class="chart-legend"><span class="lg lg-in">فروش</span><span class="lg build-color-lg">ساخت</span><span class="lg-note">— روی هر هفته بزن برای جزئیات</span></div>';
 
     box.querySelectorAll('.wd-col.clickable').forEach(function (col) {
       col.addEventListener('click', function () {
@@ -787,31 +789,35 @@
     weekBuilds.forEach(function (b) { built += b.qty; });
 
     var labels = ['هفته ۱', 'هفته ۲', 'هفته ۳', 'هفته ۴', 'هفته ۵'];
-    $('weekModalTitle').textContent = '🗓️ ' + labels[w] + ' — ' + J.monthName(jm) + ' ' + J.faNum(jy);
-    $('weekModalRange').textContent = '📅 ' + J.faNum(dayStart) + ' تا ' + J.faNum(dayEnd) + ' ' + J.monthName(jm);
+    var _wt=document.getElementById('weekModalTitleText'); if(_wt) _wt.textContent=labels[w] + ' — ' + J.monthName(jm) + ' ' + J.faNum(jy); else $('weekModalTitle').textContent=labels[w] + ' — ' + J.monthName(jm) + ' ' + J.faNum(jy);
+    $('weekModalRange').textContent = J.faNum(dayStart) + ' تا ' + J.faNum(dayEnd) + ' ' + J.monthName(jm);
 
     $('wkSummary').innerHTML =
       '<div class="md-grid">' +
-      mdCell('💰 درآمد', fmtMoney(income), 'gold') +
-      mdCell('🛒 فروش', fnum(sold) + ' عدد', 'blue') +
-      mdCell('🏗️ ساخت', fnum(built) + ' عدد', 'green') +
+      mdCell('درآمد', fmtMoney(income), 'gold') +
+      mdCell('فروش', fnum(sold) + ' عدد', 'blue') +
+      mdCell('ساخت', fnum(built) + ' عدد', 'green') +
       '</div>';
 
-    $('wkSales').innerHTML = weekSales.length
-      ? weekSales.slice().sort(function (a, b) { return a.jd - b.jd; }).map(function (s) {
-        var j = { jy: s.jy, jm: s.jm, jd: s.jd };
-        return '<div class="trow"><div class="n"><b>' + s.name + '</b><small>' + J.jToStr(j) + ' · ' + (s.channel || '') + '</small></div>' +
-          '<span class="v gold">' + fnum(s.qty) + ' × ' + fmtMoney(s.price) + ' = <b>' + fmtMoney(s.qty * s.price) + '</b></span></div>';
-      }).join('')
-      : '<div class="empty small">فروشی در این هفته ثبت نشده</div>';
+    if (weekSales.length) {
+      var rows = weekSales.slice().sort(function(a,b){return a.jd-b.jd;}).map(function(s){
+        var j={jy:s.jy,jm:s.jm,jd:s.jd};
+        return '<tr><td><b>'+s.name+'</b><br><small>'+J.jToStr(j)+' · '+(s.channel||'')+'</small></td><td class="num">'+fnum(s.qty)+' × '+fmtMoney(s.price)+'</td><td class="num" style="color:var(--accent)">'+fmtMoney(s.qty*s.price)+'</td></tr>';
+      }).join('');
+      $('wkSales').innerHTML = '<table class="wk-table"><thead><tr><th>مجسمه</th><th style="text-align:left">تعداد × قیمت</th><th style="text-align:left">مبلغ</th></tr></thead><tbody>'+rows+'</tbody></table>';
+    } else {
+      $('wkSales').innerHTML = '<div class="empty small">فروشی در این هفته ثبت نشده</div>';
+    }
 
-    $('wkBuilds').innerHTML = weekBuilds.length
-      ? weekBuilds.slice().sort(function (a, b) { return a.jd - b.jd; }).map(function (b) {
-        var j = { jy: b.jy, jm: b.jm, jd: b.jd };
-        return '<div class="trow"><div class="n"><b>' + b.name + '</b><small>' + J.jToStr(j) + '</small></div>' +
-          '<span class="v green">+' + fnum(b.qty) + ' عدد</span></div>';
-      }).join('')
-      : '<div class="empty small">ساختی در این هفته ثبت نشده</div>';
+    if (weekBuilds.length) {
+      var brows = weekBuilds.slice().sort(function(a,b){return a.jd-b.jd;}).map(function(b){
+        var j={jy:b.jy,jm:b.jm,jd:b.jd};
+        return '<tr><td><b>'+b.name+'</b><br><small>'+J.jToStr(j)+'</small></td><td class="num" style="color:var(--green)">+'+fnum(b.qty)+'</td><td class="num">'+ (b.price ? fmtMoney(b.price) : '—') +'</td></tr>';
+      }).join('');
+      $('wkBuilds').innerHTML = '<table class="wk-table"><thead><tr><th>مجسمه</th><th style="text-align:left">تعداد</th><th style="text-align:left">قیمت واحد</th></tr></thead><tbody>'+brows+'</tbody></table>';
+    } else {
+      $('wkBuilds').innerHTML = '<div class="empty small">ساختی در این هفته ثبت نشده</div>';
+    }
 
     $('weekModal').classList.add('open');
   }
@@ -841,10 +847,10 @@
 
     var insight = $('weekdayBest');
     if (!total) {
-      insight.innerHTML = '<div class="insight-empty">📅 هنوز فروشی ثبت نشده</div>';
+      insight.innerHTML = '<div class="insight-empty">هنوز فروشی ثبت نشده</div>';
       return;
     }
-    insight.innerHTML = '🏆 <b>بهترین روز فروش: ' + fullNames[bestIdx] + '</b> — ' + fnum(counts[bestIdx]) + ' فروش (' + fnum(Math.round(counts[bestIdx] / total * 100)) + '٪ از کل)' +
+    insight.innerHTML = '<b>بهترین روز فروش: ' + fullNames[bestIdx] + '</b> — ' + fnum(counts[bestIdx]) + ' فروش (' + fnum(Math.round(counts[bestIdx] / total * 100)) + '٪ از کل)' +
       '<br><span class="insight-sub">از بین روزهای هفته — همه‌ی تاریخ‌ها</span>';
   }
 
@@ -962,7 +968,7 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
     try { localStorage.setItem('sact_lastbackup', J.fullLabel(J.today())); } catch (e) {}
     renderLastBackupInfo();
-    toast('پشتیبان دانلود شد 💾');
+    toast('پشتیبان دانلود شد');
   }
 
   function doRestore(file) {
@@ -988,7 +994,7 @@
           }
           normalizeDates();
           renderAll();
-          toast('🎉 بازیابی شد — ' + fnum(sl.length) + ' فروش، ' + fnum(bl.length) + ' ساخت');
+          toast('بازیابی شد — ' + fnum(sl.length) + ' فروش، ' + fnum(bl.length) + ' ساخت');
         });
       } catch (err) {
         toast('خطا: ' + err.message, 'err');

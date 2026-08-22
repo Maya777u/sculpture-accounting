@@ -14,7 +14,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style-forge.css" id="themeCSS">
   <script>
-    /* تم پیش‌فرض: Forge (تنها تم) */
+    /* تم‌سیچر: ذخیره انتخاب در localStorage */
+    (function() {
+      var saved = localStorage.getItem('sact_theme');
+      if (saved === 'classic') {
+        document.getElementById('themeCSS').href = 'css/style.css';
+      } else if (saved === 'forge') {
+        document.getElementById('themeCSS').href = 'css/style-forge.css';
+      }
+    })();
   </script>
 </head>
 <body>
@@ -25,7 +33,7 @@
   <!-- تم‌سیچر (حذف شد — به تنظیمات منتقل شد) -->
 
   <div id="splash" class="splash">
-    <div class="splash-mark">🗿</div>
+    <div class="splash-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M21 12l-9 5-9-5"/><path d="M21 16l-9 5-9-5"/></svg></div>
     <div class="splash-brand">مجسمه‌حساب</div>
     <div class="splash-sub">دفترچه فروش و سود</div>
     <div class="splash-bar"><span></span></div>
@@ -33,7 +41,7 @@
 
   <header class="hdr">
     <div class="brand">
-      <span class="brand-mark">🗿</span>
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M21 12l-9 5-9-5"/><path d="M21 16l-9 5-9-5"/></svg></span>
       <div>
         <h1>مجسمه‌حساب</h1>
         <span>سالن فروش و سود</span>
@@ -41,7 +49,7 @@
     </div>
     <div class="hdr-box">
       <span class="hdr-date" id="hdrDate"></span>
-      <button class="icon-btn" id="gearBtn" title="تنظیمات">⚙️</button>
+      <button class="icon-btn" id="gearBtn" title="تنظیمات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
     </div>
   </header>
 
@@ -57,24 +65,24 @@
       </div>
 
       <div class="kpis">
-        <div class="kpi" data-goto="reports"><span class="kpi-ico gold-ic">💰</span><div class="kpi-num" id="kpiIncome">۰</div><div class="kpi-lbl">درآمد این ماه</div></div>
-        <div class="kpi" data-goto="stock"><span class="kpi-ico blue-ic">🛒</span><div class="kpi-num" id="kpiSold">۰</div><div class="kpi-lbl">فروش این ماه</div></div>
-        <div class="kpi" data-goto="stock"><span class="kpi-ico green-ic">📦</span><div class="kpi-num" id="kpiStock">۰</div><div class="kpi-lbl">موجودی انبار</div></div>
-        <div class="kpi" data-goto="reports"><span class="kpi-ico red-ic">🔥</span><div class="kpi-num" id="kpiBestDay">۰</div><div class="kpi-lbl">بهترین روز هفته</div></div>
+        <div class="kpi" data-goto="reports"><span class="kpi-ico gold-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 14a2 2 0 0 0 0-4h-2v4h2z"/><path d="M2 10h20"/></svg></span><div class="kpi-num" id="kpiIncome">۰</div><div class="kpi-lbl">درآمد این ماه</div></div>
+        <div class="kpi" data-goto="stock"><span class="kpi-ico blue-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="20" r="1.6" fill="currentColor" stroke="none"/><circle cx="18" cy="20" r="1.6" fill="currentColor" stroke="none"/><path d="M2 4h2l2.2 9.2a2 2 0 0 0 2 1.5h8.6a2 2 0 0 0 2-1.5L21 8H6"/></svg></span><div class="kpi-num" id="kpiSold">۰</div><div class="kpi-lbl">فروش این ماه</div></div>
+        <div class="kpi" data-goto="stock"><span class="kpi-ico green-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></span><div class="kpi-num" id="kpiStock">۰</div><div class="kpi-lbl">موجودی انبار</div></div>
+        <div class="kpi" data-goto="reports"><span class="kpi-ico red-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3s4 3.2 4 7a4 4 0 0 1-8 0c0-3.8 4-7 4-7z"/><path d="M9 14a3 3 0 0 0 6 0c0-1.2-.6-2-1.2-2.7"/></svg></span><div class="kpi-num" id="kpiBestDay">۰</div><div class="kpi-lbl">بهترین روز هفته</div></div>
       </div>
 
       <div class="quick-actions">
         <button class="qaction build" data-goto="build">
-          <span class="qa-ico">🏗️</span><span class="qa-title">ثبت ساخت</span>
+          <span class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3l7 7-5 5-7-7 5-5z"/><path d="M3 21l4-4"/><path d="M9 14l-3 3"/></svg></span><span class="qa-title">ثبت ساخت</span>
         </button>
         <button class="qaction sell" data-goto="sell">
-          <span class="qa-ico">💰</span><span class="qa-title">ثبت فروش</span>
+          <span class="qa-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 14a2 2 0 0 0 0-4h-2v4h2z"/><path d="M2 10h20"/></svg></span><span class="qa-title">ثبت فروش</span>
         </button>
       </div>
 
       <div class="cpanel">
         <div class="cpanel-head">
-          <h3>🔥 پرفروش‌ترین‌های این ماه</h3>
+          <h3><span class="hd-ico accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h10v5a5 5 0 0 1-10 0V3z"/><path d="M7 8H4a3 3 0 0 0 3 3"/><path d="M17 8h3a3 3 0 0 1-3 3"/><path d="M12 14v4"/><path d="M8 21h8"/></svg></span>پرفروش‌ترین‌های این ماه</h3>
           <button class="lnk" data-goto="reports">گزارش کامل ←</button>
         </div>
         <div id="dashTopSellers"></div>
@@ -83,7 +91,7 @@
 
     <!-- ============ BUILD ============ -->
     <section id="view-build" class="view">
-      <div class="view-head"><h2>🏗️ ثبت ساخت</h2><span class="v-date" id="buildDateToday"></span></div>
+      <div class="view-head"><h2><span class="hd-ico accent" style="width:26px;height:26px;border-radius:8px;display:inline-grid;place-items:center;vertical-align:middle;margin-left:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3l7 7-5 5-7-7 5-5z"/><path d="M3 21l4-4"/><path d="M9 14l-3 3"/></svg></span>ثبت ساخت</h2><span class="v-date" id="buildDateToday"></span></div>
       <div class="cpanel form-panel">
         <div class="form-grid">
           <label class="f-full">نام مجسمه <span class="req">*</span>
@@ -98,7 +106,7 @@
           <label class="f-full">تاریخ ساخت (شمسی)
             <div class="date-row">
               <input type="text" id="bDate" class="input" placeholder="۱۴۰۵/۰۵/۱۸">
-              <button type="button" class="date-btn" id="bDateBtn">🗓</button>
+              <button type="button" class="date-btn" id="bDateBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
             </div>
           </label>
         </div>
@@ -106,37 +114,37 @@
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>🧾 تاریخچه ساخت</h3><span class="sub">روی ردیف بزن برای ویرایش/حذف</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg></span>تاریخچه ساخت</h3><span class="sub">روی ردیف بزن برای ویرایش/حذف</span></div>
         <div id="buildHistory"></div>
       </div>
 
       <!-- نمودار ساخت ماهانه -->
       <div class="cpanel">
-        <div class="cpanel-head"><h3>📊 ساخت در ماه‌ها</h3><span class="sub">چند مجسمه هر ماه ساختی؟</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>ساخت در ماه‌ها</h3><span class="sub">چند مجسمه هر ماه ساختی؟</span></div>
         <div id="chBuildsMonthly"></div>
       </div>
     </section>
 
     <!-- ============ STOCK (انبار) ============ -->
     <section id="view-stock" class="view">
-      <div class="view-head"><h2>📦 انبار مجسمه‌ها</h2><span class="v-date" id="stockDate"></span></div>
+      <div class="view-head"><h2><span class="hd-ico" style="width:26px;height:26px;border-radius:8px;display:inline-grid;place-items:center;vertical-align:middle;margin-left:8px;background:rgba(255,255,255,.06);border:1px solid var(--line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></span>انبار مجسمه‌ها</h2><span class="v-date" id="stockDate"></span></div>
       <div class="cpanel">
-        <div class="cpanel-head"><h3>موجودی فعلی</h3><span class="sub">با فروش، خودکار کم می‌شود</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></span>موجودی فعلی</h3><span class="sub">با فروش، خودکار کم می‌شود</span></div>
         <div id="stockCards" class="stock-grid"></div>
       </div>
     </section>
 
     <!-- ============ SELL ============ -->
     <section id="view-sell" class="view">
-      <div class="view-head"><h2>💰 ثبت فروش</h2><span class="v-date" id="sellDateToday"></span></div>
+      <div class="view-head"><h2><span class="hd-ico accent" style="width:26px;height:26px;border-radius:8px;display:inline-grid;place-items:center;vertical-align:middle;margin-left:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 14a2 2 0 0 0 0-4h-2v4h2z"/><path d="M2 10h20"/></svg></span>ثبت فروش</h2><span class="v-date" id="sellDateToday"></span></div>
 
       <div class="cpanel" id="stockPanel">
-        <div class="cpanel-head"><h3>📦 موجودی فعلی</h3><span class="sub">روی مجسمه بزن</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></span>موجودی فعلی</h3><span class="sub">روی مجسمه بزن</span></div>
         <div id="stockChips" class="chips"></div>
       </div>
 
       <div class="cpanel" id="sellFormPanel">
-        <div class="cpanel-head"><h3>🧾 اطلاعات فروش</h3></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg></span>اطلاعات فروش</h3></div>
         <div class="form-grid">
           <label class="f-full">مجسمه
             <select id="sName" class="input"></select>
@@ -159,26 +167,26 @@
           <label class="f-full">تاریخ فروش (شمسی)
             <div class="date-row">
               <input type="text" id="sDate" class="input" placeholder="۱۴۰۵/۰۵/۱۸">
-              <button type="button" class="date-btn" id="sDateBtn">📅</button>
+              <button type="button" class="date-btn" id="sDateBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
             </div>
           </label>
         </div>
-        <button class="btn primary big" id="btnSellAdd">✔ ثبت فروش</button>
+        <button class="btn primary big" id="btnSellAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> ثبت فروش</button>
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>🕘 فروش‌های اخیر</h3><span class="sub">روی ردیف بزن ویرایش/حذف</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>فروش‌های اخیر</h3><span class="sub">روی ردیف بزن ویرایش/حذف</span></div>
         <div id="recentSales"></div>
       </div>
     </section>
 
     <!-- ============ REPORTS ============ -->
     <section id="view-reports" class="view">
-      <div class="view-head"><h2>📊 گزارش حرفه‌ای</h2><span class="v-date">شمسی · دقیق</span></div>
+      <div class="view-head"><h2><span class="hd-ico accent" style="width:26px;height:26px;border-radius:8px;display:inline-grid;place-items:center;vertical-align:middle;margin-left:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>گزارش حرفه‌ای</h2><span class="v-date">شمسی · دقیق</span></div>
 
       <div class="cpanel">
         <div class="cpanel-head">
-          <h3>📈 درآمد ماهانه</h3>
+          <h3><span class="hd-ico accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>درآمد ماهانه</h3>
           <div class="seg-toggle">
             <button class="seg-btn on" id="seg6m">۶ ماه</button>
             <button class="seg-btn" id="segYear">کل سال</button>
@@ -189,18 +197,18 @@
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>🗓️ فروش هفتگی (این ماه)</h3><span class="sub">فروش / ساخت به تفکیک هفته</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>فروش هفتگی (این ماه)</h3><span class="sub">فروش / ساخت به تفکیک هفته</span></div>
         <div id="chWeekly" class="chart-svg"></div>
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>📅 روزهای هفته</h3><span class="sub">کدوم روزها بیشتر فروختی؟</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>روزهای هفته</h3><span class="sub">کدوم روزها بیشتر فروختی؟</span></div>
         <div id="chWeekday" class="chart-svg"></div>
         <div class="insight-box" id="weekdayBest"></div>
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>🏪 کانال‌های فروش</h3><span class="sub">این ماه</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 9l1-5h16l1 5"/><path d="M3 9h18v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><path d="M9 14h6"/></svg></span>کانال‌های فروش</h3><span class="sub">این ماه</span></div>
         <div class="donut-row">
           <div class="donut" id="chDonut"></div>
           <div class="donut-legend" id="chDonutLegend"></div>
@@ -208,7 +216,7 @@
       </div>
 
       <div class="cpanel">
-        <div class="cpanel-head"><h3>🏆 پرفروش‌ترین‌ها (پارتو ۸۰/۲۰)</h3><span class="sub">این ماه</span></div>
+        <div class="cpanel-head"><h3><span class="hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h10v5a5 5 0 0 1-10 0V3z"/><path d="M7 8H4a3 3 0 0 0 3 3"/><path d="M17 8h3a3 3 0 0 1-3 3"/><path d="M12 14v4"/><path d="M8 21h8"/></svg></span>پرفروش‌ترین‌ها (پارتو ۸۰/۲۰)</h3><span class="sub">این ماه</span></div>
         <div id="chPareto"></div>
       </div>
     </section>
@@ -244,12 +252,12 @@
     <div class="modal-box">
       <div class="modal-head">
         <h3 id="editModalTitle">ویرایش</h3>
-        <button class="icon-btn modal-close" id="editClose">✕</button>
+        <button class="icon-btn modal-close" id="editClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
       <div class="form-grid" id="editFields"></div>
       <div class="edit-actions">
-        <button class="btn danger" id="editDelete">🗑️ حذف</button>
-        <button class="btn primary" id="editSave">💾 ذخیره</button>
+        <button class="btn danger" id="editDelete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg> حذف</button>
+        <button class="btn primary" id="editSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg> ذخیره</button>
       </div>
     </div>
   </div>
@@ -258,13 +266,13 @@
   <div class="modal" id="calModal" aria-hidden="true">
     <div class="modal-box modal-sm">
       <div class="modal-head">
-        <h3 id="calTitle">📅 انتخاب تاریخ</h3>
-        <button class="icon-btn modal-close" id="calClose">✕</button>
+        <h3 id="calTitle"><span class="mh-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>انتخاب تاریخ</h3>
+        <button class="icon-btn modal-close" id="calClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
       <div class="cal-nav">
-        <button class="cal-arrow" id="calPrev">◀</button>
+        <button class="cal-arrow" id="calPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
         <span class="cal-month" id="calMonthLabel">مرداد ۱۴۰۵</span>
-        <button class="cal-arrow" id="calNext">▶</button>
+        <button class="cal-arrow" id="calNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
       </div>
       <div class="cal-grid" id="calGrid"></div>
       <div class="cal-foot">
@@ -277,20 +285,20 @@
   <div class="modal" id="monthModal" aria-hidden="true">
     <div class="modal-box">
       <div class="modal-head">
-        <h3 id="monthModalTitle">📌 حساب کتاب ماه</h3>
-        <button class="icon-btn modal-close" id="monthClose">✕</button>
+        <h3 id="monthModalTitle"><span class="mh-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span><span id="monthModalTitleText">حساب کتاب ماه</span></h3>
+        <button class="icon-btn modal-close" id="monthClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
       <div class="md-summary" id="mdSummary"></div>
       <div class="md-days-box">
-        <div class="md-subhead">🔥 روزهای پرفروش</div>
+        <div class="md-subhead">روزهای پرفروش</div>
         <div id="mdDays"></div>
       </div>
       <div class="md-days-box">
-        <div class="md-subhead">🛒 فروش‌های این ماه</div>
+        <div class="md-subhead">فروش‌های این ماه</div>
         <div id="mdSales"></div>
       </div>
       <div class="md-days-box">
-        <div class="md-subhead">🏗️ ساخت‌های این ماه</div>
+        <div class="md-subhead">ساخت‌های این ماه</div>
         <div id="mdBuilds"></div>
       </div>
     </div>
@@ -300,17 +308,17 @@
   <div class="modal" id="weekModal" aria-hidden="true">
     <div class="modal-box">
       <div class="modal-head">
-        <h3 id="weekModalTitle">🗓️ هفته</h3>
-        <button class="icon-btn modal-close" id="weekClose">✕</button>
+        <h3 id="weekModalTitle"><span class="mh-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span><span id="weekModalTitleText">هفته</span></h3>
+        <button class="icon-btn modal-close" id="weekClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
       <div class="week-range" id="weekModalRange"></div>
       <div class="md-summary" id="wkSummary"></div>
       <div class="md-days-box">
-        <div class="md-subhead">🛒 فروش‌های این هفته</div>
+        <div class="md-subhead">فروش‌های این هفته</div>
         <div id="wkSales"></div>
       </div>
       <div class="md-days-box">
-        <div class="md-subhead">🏗️ ساخت‌های این هفته</div>
+        <div class="md-subhead">ساخت‌های این هفته</div>
         <div id="wkBuilds"></div>
       </div>
     </div>
@@ -320,18 +328,19 @@
   <div class="modal" id="settingsModal" aria-hidden="true">
     <div class="modal-box">
       <div class="modal-head">
-        <h3>⚙️ تنظیمات</h3>
-        <button class="icon-btn modal-close" data-close="settingsModal">✕</button>
+        <h3><span class="mh-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>تنظیمات</h3>
+        <button class="icon-btn modal-close" data-close="settingsModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
-      <p class="set-desc">🎨 تم برنامه:</p>
+      <p class="set-desc">تم برنامه:</p>
       <div class="theme-row" id="settingsThemes">
-        <button class="theme-opt active" data-theme="forge">🔥 Forge</button>
+        <button class="theme-opt active" data-theme="ultra">Ultra</button>
+        <button class="theme-opt" data-theme="forge">Forge — تیره دقیق</button>
       </div>
       <div class="hr"></div>
-      <p class="set-desc">💾 پشتیبان‌گیری و بازیابی — فایل JSON کامل:</p>
+      <p class="set-desc">پشتیبان‌گیری و بازیابی — فایل JSON کامل:</p>
       <div class="set-actions">
-        <button class="btn primary" id="btnBackup">⬇️ دانلود پشتیبان</button>
-        <button class="btn" id="btnRestore">⬆️ بازیابی</button>
+        <button class="btn primary" id="btnBackup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v13"/><path d="M7 11l5 5 5-5"/><path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg> دانلود پشتیبان</button>
+        <button class="btn" id="btnRestore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 17V3"/><path d="M7 8l5-5 5 5"/><path d="M3 17v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg> بازیابی</button>
         <input type="file" id="restoreFile" accept=".json,application/json" style="display:none">
       </div>
       <div class="hr"></div>
@@ -352,13 +361,27 @@
     }
   </script>
   <script>
-    /* تم‌سیچر: هر انتخابی → Forge (تنها تم باقی‌مانده) */
+    /* تم‌سیچر در تنظیمات — فقط Ultra + Forge */
     (function() {
       var css = document.getElementById('themeCSS');
-      css.href = 'css/style-forge.css';
+      var btns = document.querySelectorAll('.theme-opt');
+      var themes = { ultra: 'css/style-ultra.css', forge: 'css/style-forge.css' };
       var pc = document.getElementById('forge-particles');
-      if (pc) pc.style.display = 'block';
-      localStorage.setItem('sact_theme', 'forge');
+      btns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var theme = btn.dataset.theme;
+          btns.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          css.href = themes[theme];
+          localStorage.setItem('sact_theme', theme);
+          if (pc) pc.style.display = (theme === 'forge') ? 'block' : 'none';
+        });
+      });
+      var saved = localStorage.getItem('sact_theme');
+      if (saved && themes[saved]) {
+        css.href = themes[saved];
+        btns.forEach(function(b) { b.classList.remove('active'); if (b.dataset.theme === saved) b.classList.add('active'); });
+      }
     })();
   </script>
 </body>

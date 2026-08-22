@@ -4,8 +4,8 @@ const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  
-  
+  './css/style.css',
+  './css/style-ultra.css',
   './css/style-forge.css',
   './js/jalali.js',
   './js/db.js',
